@@ -51,7 +51,7 @@
         android:layout_height="48dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
-        android:src="@drawable/shot_exit"
+        android:src="@mipmap/my_face"
         android:layout_margin="32dp"
         app:layout_constraintLeft_toRightOf="@id/type_recycler"
         app:layout_constraintTop_toTopOf="parent"
@@ -114,6 +114,47 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
+    <ImageView
+        android:id="@+id/btnShotExit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="#00000000"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/shot_exit"
+        android:layout_margin="12dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnShot"
+        />
+
+    <ImageView
+        android:id="@+id/btnShot"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="#00000000"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/shot"
+        android:layout_margin="12dp"
+
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnShotExit"
+        app:layout_constraintBottom_toTopOf="@id/btnFacing"
+        />
+
+    <ImageView
+        android:id="@+id/btnFacing"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="#00000000"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/front_back"
+        android:layout_margin="12dp"
+
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnShot"
+        app:layout_constraintBottom_toTopOf="@id/btnPlace"
+        />
+
     <ImageButton
         android:id="@+id/btnPlace"
         android:layout_width="54dp"
@@ -128,32 +169,6 @@
         app:layout_constraintTop_toTopOf="@id/placeAddress"
         app:layout_constraintTop_toBottomOf="@id/textVoice"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
-
-    <ImageView
-        android:id="@+id/btnShot"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="#00000000"
-        android:contentDescription="@string/todo"
-        android:src="@drawable/shot"
-        android:layout_margin="12dp"
-
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnShotExit"
-        app:layout_constraintBottom_toTopOf="@id/btnSpeak"
-        />
-
-    <ImageView
-        android:id="@+id/btnShotExit"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="#00000000"
-        android:contentDescription="@string/todo"
-        android:src="@drawable/shot_exit"
-        android:layout_margin="12dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
