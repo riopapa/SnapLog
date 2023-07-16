@@ -69,7 +69,7 @@ class GPSTracker  implements LocationListener {
             oLatitude = location.getLatitude();
             oLongitude = location.getLongitude();
             oAltitude = location.getAltitude();
-            utils.log("location changed",oLatitude+","+oLongitude+","+oAltitude);
+//            utils.log("location changed",oLatitude+","+oLongitude+","+oAltitude);
             Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
             strAddress = GPS2Address.get(geocoder, oLatitude, oLongitude);
             MainActivity.inflateAddress();

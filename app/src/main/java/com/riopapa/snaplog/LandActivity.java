@@ -2,7 +2,8 @@ package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.GPSTracker.oLatitude;
 import static com.riopapa.snaplog.GPSTracker.oLongitude;
-import static com.riopapa.snaplog.MainActivity.zoomValue;
+import static com.riopapa.snaplog.Vars.googleShot;
+import static com.riopapa.snaplog.Vars.zoomValue;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -26,7 +27,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
     public class LandActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
 
-    private String logID = "Land";
     GoogleMap mGoogleMap;
 
     @Override
@@ -66,7 +66,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
     GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
         @Override
         public void onSnapshotReady(Bitmap snapshot) {
-            MainActivity.googleShot = mergeScaleBitmap(snapshot, getScaleMap(zoomValue));
+            googleShot = mergeScaleBitmap(snapshot, getScaleMap(zoomValue));
             finish();
         }
     };

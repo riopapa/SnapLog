@@ -4,10 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.hardware.Camera;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CaptureRequest;
+import android.media.ImageReader;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Size;
+import android.view.TextureView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 public class Vars {
 
@@ -30,8 +38,40 @@ public class Vars {
     static boolean sharedMap;
     static int sharedFace;
     static Bitmap sigMap = null;
+    static Bitmap googleShot = null;
+    static int zoomValue = 15;
 
+    static long now_time;
+    static boolean exitFlag = false;
+    static ImageReader mImageReader;
+    static CaptureRequest.Builder mPreviewRequestBuilder;
+    static CaptureRequest mPreviewRequest;
+    static Semaphore mCameraOpenCloseLock = new Semaphore(1);
+    static final int REQUEST_CAMERA_PERMISSION = 1;
+    static CameraCaptureSession mCaptureSession;
+    static String mCameraId;
+    static CameraDevice mCameraDevice;
+
+    static Size imageDimensions;
+
+    static String map_api_key;
+    static Bitmap cameraImage;
+
+    static TextureView mTextureView;
+    static Size mPreviewSize;
+    static CameraCaptureSession mCameraSession;
+    static CaptureRequest.Builder mCaptureRequestBuilder;
+    static HandlerThread mBackgroundThread;
+    static Handler mBackgroundHandler;
+
+    static int mWidth, mHeight;
+
+    /* Modules */
     static Utils utils;
+    static TakePicture takePicture;
+    static CameraSub cameraSub;
+
+    /* Main Activity variables */
     static Activity mActivity;
     static TextView tvAddress;
     static TextView tvVoice;
@@ -47,6 +87,7 @@ public class Vars {
     static ArrayList<PlaceInfo> placeInfos = null;
     static Activity selectActivity;
 
+    final static int SAVE_MAP = 34567;
     static String [] iconNames = { "question",
             "airport", "amusement", "aquarium", "art_gallery", "atm", "baby",
             "bank_dollar", "bank_euro", "bank_pound", "bank_yen", "bar", "barber",
