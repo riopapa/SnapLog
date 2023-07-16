@@ -9,6 +9,7 @@ import static com.riopapa.snaplog.Vars.typeNumber;
 import static com.riopapa.snaplog.Vars.utils;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeHolder>  {
             this.tvName = itemView.findViewById(R.id.typeName);
             this.ivIcon = itemView.findViewById(R.id.typeIcon);
             this.viewLine.setOnClickListener(view1 -> {
-                typeNumber = getAdapterPosition();
+                typeNumber = getAbsoluteAdapterPosition();
                 placeType = typeNames[typeNumber];
                 typeAdapter.notifyDataSetChanged();
                 ImageView iv = mActivity.findViewById(R.id.btnPlace);
@@ -62,6 +63,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeHolder>  {
 
         viewHolder.tvName.setText(typeNames[position]);
         viewHolder.ivIcon.setImageResource(typeIcons[position]);
+        Log.w("onBindViewHolder"+ position, typeNames[position] );
         if (typeNumber == position) {
             viewHolder.tvName.setBackgroundColor(Color.LTGRAY);
         }
