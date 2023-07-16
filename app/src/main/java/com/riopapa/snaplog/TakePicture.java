@@ -6,6 +6,7 @@ import static com.riopapa.snaplog.GPSTracker.oLongitude;
 import static com.riopapa.snaplog.Vars.SAVE_MAP;
 import static com.riopapa.snaplog.Vars.cameraOrientation;
 import static com.riopapa.snaplog.Vars.cameraSub;
+import static com.riopapa.snaplog.Vars.deviceOrientation;
 import static com.riopapa.snaplog.Vars.exitFlag;
 import static com.riopapa.snaplog.Vars.googleShot;
 import static com.riopapa.snaplog.Vars.imageDimensions;
@@ -44,8 +45,10 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -73,10 +76,21 @@ public class TakePicture {
         int width = 640;
         int height = 480;
 
-        if(jpegSizes != null && jpegSizes.length>0){
-            width = jpegSizes[0].getWidth();
-            height = jpegSizes[0].getHeight();
+        for (Size sz: jpegSizes) {  // find out max size with 16:9
+            float ratio = (float) sz.getHeight() / (float) sz.getWidth();
+            if (ratio > 1.7 && ratio < 1.8) {
+                width = sz.getWidth();
+                height = sz.getHeight();
+                break;
+            } else if (ratio < 1/1.7 && ratio > 1/1.8) {
+                width = sz.getWidth();
+                height = sz.getHeight();
+                break;
+            }
         }
+
+        cameraOrientation = deviceOrientation.orientation;
+        Log.w("Rotation "+cameraOrientation," is "+width+" x "+height);
 
         ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
         List<Surface> outputSurfaces = new ArrayList<>(2);
@@ -171,7 +185,7 @@ public class TakePicture {
 
             @Override
             public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                Toast.makeText(tContext.getApplicationContext(), "Configuration Changed", Toast.LENGTH_LONG).show();
+                new Message().show("Configuration Change Failed");
             }
         }, null);
     }

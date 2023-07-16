@@ -1,5 +1,6 @@
 package com.riopapa.snaplog;
 
+import static com.riopapa.snaplog.Vars.directory;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
 import static com.riopapa.snaplog.Vars.sigMap;
 
@@ -59,10 +60,10 @@ class BuildBitMap {
 
         if (withPhoto && suffix.length() == 0) {    // no suffix
             String outFileName = sdfFileName.format(nowTime) + suffix;
-            File newFile = new File(getPublicCameraDirectory(), phonePrefix + outFileName + ".jpg");
+            File newFile = new File(directory, phonePrefix + outFileName + ".jpg");
             writeCameraFile(outBitmap, newFile);
             setNewFileExif(newFile);
-            activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
+//            activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
         }
 
         Bitmap mergedMap = markDateLocSignature(outBitmap, nowTime, suffix);
@@ -71,15 +72,10 @@ class BuildBitMap {
         if (foodName.length() > 2)
             foodName = "(" + foodName +")";
         String outFileName2 = sdfFileName.format(nowTime) + "_" + sPlace + foodName;
-        File newFile2 = new File(getPublicCameraDirectory(), phonePrefix + outFileName2 + suffix + "_ha.jpg");
+        File newFile2 = new File(directory, phonePrefix + outFileName2 + suffix + "_ha.jpg");
         writeCameraFile(mergedMap, newFile2);
         setNewFileExif(newFile2);
-        activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile2)));
-    }
-
-    File getPublicCameraDirectory() {
-        return new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM),"/Camera");
+//        activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile2)));
     }
 
     private void setNewFileExif(File fileHa) {

@@ -1,5 +1,6 @@
 package com.riopapa.snaplog;
 
+import static com.riopapa.snaplog.Vars.directory;
 import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
 import static com.riopapa.snaplog.Vars.sharedAutoLoad;
@@ -107,15 +108,15 @@ class Utils {
     }
 
     File getPackageDirectory() {
-        File directory = new File(Environment.getExternalStorageDirectory(), context.getResources().getString(R.string.app_name));
+        directory = new File(Environment.getExternalStorageDirectory(), context.getResources().getString(R.string.app_name));
         try {
             if (!directory.exists()) {
-                if(directory.mkdirs()) {
-                    Log.e("mkdirs","Failed "+directory);
+                if(!directory.mkdirs()) {
+                    new Message().show("Failed  to make"+directory);
                 }
             }
         } catch (Exception e) {
-            Log.e("creating Directory error", directory + "_" + e);
+            new Message().show("creating Directory error");
         }
         return directory;
     }

@@ -52,13 +52,11 @@ class GPSTracker  implements LocationListener {
             if (locationManager != null) {
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
-                    utils.log("GPS 1", "lat="+location.getLatitude()+" , lng="+location.getLongitude()+" time="+location.getTime());
                     oLatitude = location.getLatitude();
                     oLongitude = location.getLongitude();
                     oAltitude = location.getAltitude();
                 }
             }
-            utils.log("wait","location update");
         }
     }
 
@@ -69,11 +67,11 @@ class GPSTracker  implements LocationListener {
             oLatitude = location.getLatitude();
             oLongitude = location.getLongitude();
             oAltitude = location.getAltitude();
-//            utils.log("location changed",oLatitude+","+oLongitude+","+oAltitude);
             Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
             strAddress = GPS2Address.get(geocoder, oLatitude, oLongitude);
             MainActivity.inflateAddress();
         } else {
+            updateCount = 0;
             locationManager.removeUpdates(this);
         }
     }

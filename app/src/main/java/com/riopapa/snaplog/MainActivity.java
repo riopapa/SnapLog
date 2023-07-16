@@ -10,11 +10,17 @@ import static com.riopapa.snaplog.Vars.byPlaceName;
 import static com.riopapa.snaplog.Vars.cameraOrientation;
 import static com.riopapa.snaplog.Vars.cameraSub;
 import static com.riopapa.snaplog.Vars.currActivity;
+import static com.riopapa.snaplog.Vars.deviceOrientation;
+import static com.riopapa.snaplog.Vars.exitFlag;
+import static com.riopapa.snaplog.Vars.googleShot;
 import static com.riopapa.snaplog.Vars.mActivity;
+import static com.riopapa.snaplog.Vars.mBackgroundHandler;
+import static com.riopapa.snaplog.Vars.mBackgroundThread;
 import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.mHeight;
 import static com.riopapa.snaplog.Vars.mTextureView;
 import static com.riopapa.snaplog.Vars.mWidth;
+import static com.riopapa.snaplog.Vars.map_api_key;
 import static com.riopapa.snaplog.Vars.now_time;
 import static com.riopapa.snaplog.Vars.pageToken;
 import static com.riopapa.snaplog.Vars.placeInfos;
@@ -40,13 +46,6 @@ import static com.riopapa.snaplog.Vars.typeIcons;
 import static com.riopapa.snaplog.Vars.typeInfos;
 import static com.riopapa.snaplog.Vars.typeNames;
 import static com.riopapa.snaplog.Vars.typeNumber;
-import static com.riopapa.snaplog.Vars.exitFlag;
-import static com.riopapa.snaplog.Vars.map_api_key;
-import static com.riopapa.snaplog.Vars.googleShot;
-import static com.riopapa.snaplog.Vars.mBackgroundThread;
-import static com.riopapa.snaplog.Vars.mBackgroundHandler;
-import static com.riopapa.snaplog.Vars.mPreviewSize;
-
 import static com.riopapa.snaplog.Vars.utils;
 
 import android.content.ActivityNotFoundException;
@@ -56,10 +55,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -70,11 +66,10 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.util.Size;
-import android.util.SparseIntArray;
-import android.view.Surface;
 import android.view.TextureView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -82,14 +77,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.exifinterface.media.ExifInterface;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
@@ -102,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
     private Sensor mAccelerometer;
     private Sensor mMagnetometer;
     private SensorManager mSensorManager;
-    private DeviceOrientation deviceOrientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,11 +218,11 @@ public class MainActivity extends AppCompatActivity {
         if (mTextureView.isAvailable()) {
             cameraSub.open(mTextureView.getWidth(), mTextureView.getHeight());
             takePicture = new TakePicture();
+            deviceOrientation = new DeviceOrientation();
         } else {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
     }
-
 
     @Override
     public void onPause() {
@@ -289,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        deviceOrientation = new DeviceOrientation();
 
         utils.getPreference();
         map_api_key = getString(R.string.maps_api_key);
@@ -376,31 +365,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-
-    static {
-        ORIENTATIONS.append(ExifInterface.ORIENTATION_NORMAL, 0);
-        ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_90, 90);
-        ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_180, 180);
-        ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_270, 270);
-    }
+    public final static Handler changeOrientation = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            Log.w("Handler", "oritanti "+msg.what);
+            if (msg.what == 1)
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            else
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    };
 
     private void take_Picture() {
 
-        int mDeviceRotation = ORIENTATIONS.get(deviceOrientation.getOrientation());
-        if (mDeviceRotation == 0)
-            cameraOrientation = 1;
-        else if (mDeviceRotation == 180)
-            cameraOrientation = 3;
-        else if (mDeviceRotation == 90)
-            cameraOrientation = 6;
-        else
-            cameraOrientation = 8;
+        cameraOrientation = deviceOrientation.orientation;
 
         sharedLocation = tvAddress.getText().toString();
 

@@ -45,8 +45,6 @@ import java.util.concurrent.TimeUnit;
 
 public class CameraSub {
 
-
-
     public void open(int width, int height) {
         setUpCameraOutputs(width, height);
         new ConfigureTransform().set(width, height);

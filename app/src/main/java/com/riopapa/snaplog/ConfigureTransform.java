@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.Surface;
 
 public class ConfigureTransform {
@@ -16,6 +17,7 @@ public class ConfigureTransform {
             return;
         }
         int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
+        Log.w("ConfigureTransform","rotation "+rotation+", set "+viewWidth+"x"+viewHeight);
         Matrix matrix = new Matrix();
         RectF viewRect = new RectF(0, 0, viewWidth, viewHeight);
         RectF bufferRect = new RectF(0, 0, mPreviewSize.getHeight(), mPreviewSize.getWidth());

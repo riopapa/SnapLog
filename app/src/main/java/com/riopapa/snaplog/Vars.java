@@ -14,6 +14,7 @@ import android.util.Size;
 import android.view.TextureView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -86,7 +87,9 @@ public class Vars {
     static boolean isPlaceNull = true;
     static ArrayList<PlaceInfo> placeInfos = null;
     static Activity selectActivity;
+    static DeviceOrientation deviceOrientation;
 
+    static File directory;
     final static int SAVE_MAP = 34567;
     static String [] iconNames = { "question",
             "airport", "amusement", "aquarium", "art_gallery", "atm", "baby",
