@@ -19,11 +19,11 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="zoom"
+            app:defaultValue="zoomValue"
             app:entries="@array/zoom_values"
             app:entryValues="@array/zoom_values"
             app:key="zoom"
-            app:icon="@mipmap/zoom_level"
+            app:icon="@drawable/include_map"
             app:title="@string/zoom_title"
             app:useSimpleSummaryProvider="true" />
 

@@ -63,7 +63,6 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeHolder>  {
 
         viewHolder.tvName.setText(typeNames[position]);
         viewHolder.ivIcon.setImageResource(typeIcons[position]);
-        Log.w("onBindViewHolder"+ position, typeNames[position] );
         if (typeNumber == position) {
             viewHolder.tvName.setBackgroundColor(Color.LTGRAY);
         }

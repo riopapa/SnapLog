@@ -29,14 +29,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps_api_key">
         </meta-data>
+        <!--            android:configChanges="orientation|screenSize"-->
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="landscape"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

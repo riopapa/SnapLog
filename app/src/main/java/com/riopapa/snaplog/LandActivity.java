@@ -2,8 +2,9 @@ package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.GPSTracker.oLatitude;
 import static com.riopapa.snaplog.GPSTracker.oLongitude;
+import static com.riopapa.snaplog.Vars.cameraOrientation;
 import static com.riopapa.snaplog.Vars.googleShot;
-import static com.riopapa.snaplog.Vars.zoomValue;
+import static com.riopapa.snaplog.Vars.sharedZoomValue;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -34,9 +35,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_land);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        if (cameraOrientation == 1) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -49,7 +54,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
         Log.w("onMapReady ", "onMapReady");
         mGoogleMap = googleMap;
         LatLng here = new LatLng(oLatitude, oLongitude);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(here, zoomValue));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(here, sharedZoomValue));
         mGoogleMap.addMarker(new MarkerOptions().position(here)
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.my_face)));
 //        int mapType = (terrain)? GoogleMap.MAP_TYPE_TERRAIN : GoogleMap.MAP_TYPE_NORMAL;
@@ -66,7 +71,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
     GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
         @Override
         public void onSnapshotReady(Bitmap snapshot) {
-            googleShot = mergeScaleBitmap(snapshot, getScaleMap(zoomValue));
+            googleShot = mergeScaleBitmap(snapshot, getScaleMap(sharedZoomValue));
             finish();
         }
     };

@@ -57,8 +57,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.net.ConnectivityManager;
@@ -90,15 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
     private final static int VOICE_RECOGNISE = 1234;
 
-    private Sensor mAccelerometer;
-    private Sensor mMagnetometer;
-    private SensorManager mSensorManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 //        setFullScreen();
         currActivity = this.getClass().getSimpleName();
         mActivity = this;
@@ -109,10 +103,25 @@ public class MainActivity extends AppCompatActivity {
             Permission.ask(this, this, info);
         } catch (Exception e) {
             Log.e("Permission", "No Permission " + e);
+            finish();
         }
-        mTextureView = findViewById(R.id.textureView);
-        initiate_Variables();
+
         new FullScreen().set(this, Objects.requireNonNull(getSupportActionBar()));
+        mTextureView = findViewById(R.id.textureView);
+        utils = new Utils(this);
+
+        utils.getPreference();
+        map_api_key = getString(R.string.maps_api_key);
+        pageToken = NO_MORE_PAGE;
+        placeInfos = new ArrayList<>();
+        tvVoice = findViewById(R.id.textVoice);
+        tvAddress = findViewById(R.id.placeAddress);
+
+
+        typeInfos = new ArrayList<>();
+        for (int i = 0; i < typeNames.length; i++) {
+            typeInfos.add(new TypeInfo(typeNames[i], typeIcons[i]));
+        }
 
         ImageView btnShot = findViewById(R.id.btnShot);
         btnShot.setOnClickListener(v -> {
@@ -216,9 +225,14 @@ public class MainActivity extends AppCompatActivity {
         startBackgroundThread();
 
         if (mTextureView.isAvailable()) {
+            if (cameraSub != null) {
+                cameraSub.close();
+                cameraSub = new CameraSub();
+            }
             cameraSub.open(mTextureView.getWidth(), mTextureView.getHeight());
             takePicture = new TakePicture();
             deviceOrientation = new DeviceOrientation();
+            showTypeAdaptor();
         } else {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
@@ -273,31 +287,16 @@ public class MainActivity extends AppCompatActivity {
         ImageView iv = findViewById(R.id.logo);
         iv.setImageBitmap(sigMap);
     }
-    private void initiate_Variables() {
 
-        utils = new Utils(this);
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-        utils.getPreference();
-        map_api_key = getString(R.string.maps_api_key);
-        pageToken = NO_MORE_PAGE;
-        placeInfos = new ArrayList<>();
-        tvVoice = findViewById(R.id.textVoice);
-        tvAddress = findViewById(R.id.placeAddress);
-
-        typeInfos = new ArrayList<>();
-        for (int i = 0; i < typeNames.length; i++) {
-            typeInfos.add(new TypeInfo(typeNames[i], typeIcons[i]));
-        }
-        RecyclerView typeRecyclerView = findViewById(R.id.type_recycler);
+    private static void showTypeAdaptor() {
+        RecyclerView typeRecyclerView = mActivity.findViewById(R.id.type_recycler);
+        int layoutOrientation = (cameraOrientation == 1) ?
+                RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
         LinearLayoutManager mLinearLayoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+                = new LinearLayoutManager(mContext, layoutOrientation, false);
         typeRecyclerView.setLayoutManager(mLinearLayoutManager);
         typeAdapter = new TypeAdapter(typeInfos);
         typeRecyclerView.setAdapter(typeAdapter);
-
     }
 
     static void inflateAddress() {
@@ -320,8 +319,8 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == SAVE_MAP) {
             save_GoogleMap(googleShot);
-            new ExitApp();
-
+            if (exitFlag)
+                exitHandler.sendEmptyMessage(0);
         } else {
             Toast.makeText(mContext, "Request Code:" + requestCode + ", Result Code:" + resultCode + " not as expected", Toast.LENGTH_LONG).show();
         }
@@ -332,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
 
-    private void stopBackgroundThread() {
+    static void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
             mBackgroundThread.join();
@@ -365,13 +364,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public final static Handler changeOrientation = new Handler(Looper.getMainLooper()) {
+    public final static Handler orientationHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             Log.w("Handler", "oritanti "+msg.what);
-            if (msg.what == 1)
+            cameraOrientation = msg.what;
+            if (cameraOrientation == 1) {
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            else
+            } else {
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+            cameraSub.close();
+            cameraSub.open(mWidth,mHeight);
+//            showTypeAdaptor();
         }
     };
 
@@ -421,4 +425,25 @@ public class MainActivity extends AppCompatActivity {
         BuildBitMap buildBitMap = new BuildBitMap(googleShot, oLatitude, oLongitude, oAltitude, mActivity, mContext, cameraOrientation);
         buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time, "Map");
     }
+
+    public final static Handler exitHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            cameraSub.close();
+            stopBackgroundThread();
+            mActivity.finish();
+            Intent intent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/gallery");
+            intent.setAction(Intent.ACTION_PICK);
+            mActivity.startActivity(intent);
+            new Timer().schedule(new TimerTask() {
+                public void run() {
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(0);
+                }
+            }, 3000);   // wait while photo generated
+        }
+    };
+
+
 }

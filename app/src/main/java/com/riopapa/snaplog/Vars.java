@@ -36,12 +36,11 @@ public class Vars {
     static String sharedLocation;
     static boolean sharedWithPhoto;
     static int sharedLogo;
+    static int sharedZoomValue;
     static boolean sharedMap;
     static int sharedFace;
     static Bitmap sigMap = null;
     static Bitmap googleShot = null;
-    static int zoomValue = 15;
-
     static long now_time;
     static boolean exitFlag = false;
     static ImageReader mImageReader;
@@ -128,11 +127,11 @@ public class Vars {
     static String placeType = "all";
     static String byPlaceName = "";
     static int typeNumber = 0;
-    static int[] typeIcons = {R.mipmap.place_holder, R.raw.restaurant, R.raw.cafe, R.raw.bar,
+    static int[] typeIcons = {R.mipmap.place_marker, R.raw.restaurant, R.raw.cafe, R.raw.bar,
             R.raw.shopping, R.raw.shopping, R.raw.park, R.raw.worship_christian, R.raw.worship_islam,
             R.raw.parking, R.raw.school, R.raw.museum, R.raw.amusement, R.raw.amusement,
             R.raw.university,R.raw.atm, R.raw.zoo, R.raw.lodging,
-            R.mipmap.place_holder};
+            R.mipmap.place_marker};
     static String[] typeNames = {"all", "restaurant", "cafe", "bar",
             "store", "shopping_mall", "park", "church","mosque",
             "parking", "school", "museum", "tourist_attraction", "amusement",

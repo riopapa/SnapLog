@@ -1,5 +1,6 @@
 package com.riopapa.snaplog;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.riopapa.snaplog.Vars.directory;
 import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
@@ -10,6 +11,7 @@ import static com.riopapa.snaplog.Vars.sharedMap;
 import static com.riopapa.snaplog.Vars.sharedPref;
 import static com.riopapa.snaplog.Vars.sharedRadius;
 import static com.riopapa.snaplog.Vars.sharedSortType;
+import static com.riopapa.snaplog.Vars.sharedZoomValue;
 import static com.riopapa.snaplog.Vars.sharedWithPhoto;
 
 import android.content.Context;
@@ -122,13 +124,14 @@ class Utils {
     }
 
     void getPreference() {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        sharedPref = mContext.getSharedPreferences("snap", MODE_PRIVATE);
         sharedRadius = sharedPref.getString("radius", "");
         if (sharedRadius.equals("")) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("radius", "200");
             editor.putBoolean("autoLoad", true);
             editor.putString("sort", "none");
+            editor.putInt("zoomValue", 15);
             editor.putString("alpha", "163");
             editor.putBoolean("WithPhoto", true);
             editor.putInt("logo", 0);
@@ -141,12 +144,13 @@ class Utils {
         sharedAlpha = sharedPref.getString("alpha", "163");
         sharedLocation = sharedPref.getString("location","");
         sharedWithPhoto = sharedPref.getBoolean("WithPhoto", true);
+        sharedZoomValue = sharedPref.getInt("zoomValue", 15);
         sharedLogo = sharedPref.getInt("logo", 0);
         sharedMap = sharedPref.getBoolean("map", true);
     }
 
     void putPlacePreference() {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        sharedPref = mContext.getSharedPreferences("snap", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("location", sharedLocation);
         editor.apply();
@@ -162,7 +166,7 @@ class Utils {
         if (files != null) {
             for (File file : files) {
                 String shortFileName = file.getName();
-                if (myCollator.compare(shortFileName, oldDate) < 0) {
+                if (shortFileName.startsWith("log") && myCollator.compare(shortFileName, oldDate) < 0) {
                     if (file.delete())
                         Log.e("file", "Delete Error " + file);
                 }

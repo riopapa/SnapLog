@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:background="#00000000"
         android:contentDescription="@string/todo"
-        android:src="@mipmap/place_holder"
+        android:src="@drawable/place"
         android:layout_margin="@dimen/cat_margin" />
 
     <TextView

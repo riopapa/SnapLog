@@ -1,6 +1,6 @@
 package com.riopapa.snaplog;
 
-import static com.riopapa.snaplog.MainActivity.changeOrientation;
+import static com.riopapa.snaplog.MainActivity.orientationHandler;
 import static com.riopapa.snaplog.Vars.mContext;
 
 import android.hardware.SensorManager;
@@ -22,10 +22,11 @@ public class DeviceOrientation {
                     newOrientation = 6;
                 else if (arg0 > 210 && arg0 < 300) {
                     newOrientation = 1;
-                }
+                } else
+                    return;
                 if (newOrientation > 0 && newOrientation != orientation) {
                     orientation = newOrientation;
-                    changeOrientation.sendEmptyMessage(orientation);
+                    orientationHandler.sendEmptyMessage(orientation);
                 }
             }
         };

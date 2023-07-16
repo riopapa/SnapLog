@@ -235,7 +235,7 @@ public class CameraSub {
                         @Override
                         public void onConfigureFailed(
                                 @NonNull CameraCaptureSession cameraCaptureSession) {
-                            new Message().show("Failed");
+                            new Message().show("onConfigureFailed Failed");
                         }
                     }, null
             );

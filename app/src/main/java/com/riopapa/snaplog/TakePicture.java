@@ -3,6 +3,7 @@ package com.riopapa.snaplog;
 import static com.riopapa.snaplog.GPSTracker.oAltitude;
 import static com.riopapa.snaplog.GPSTracker.oLatitude;
 import static com.riopapa.snaplog.GPSTracker.oLongitude;
+import static com.riopapa.snaplog.MainActivity.exitHandler;
 import static com.riopapa.snaplog.Vars.SAVE_MAP;
 import static com.riopapa.snaplog.Vars.cameraOrientation;
 import static com.riopapa.snaplog.Vars.cameraSub;
@@ -90,7 +91,6 @@ public class TakePicture {
         }
 
         cameraOrientation = deviceOrientation.orientation;
-        Log.w("Rotation "+cameraOrientation," is "+width+" x "+height);
 
         ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
         List<Surface> outputSurfaces = new ArrayList<>(2);
@@ -101,9 +101,6 @@ public class TakePicture {
         final CaptureRequest.Builder captureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
         captureBuilder.addTarget(reader.getSurface());
         captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-
-//        int rotation = ((Activity)context).getWindowManager().getDefaultDisplay().getRotation();
-//        captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
 
         ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
             @Override
@@ -117,7 +114,7 @@ public class TakePicture {
                 now_time = System.currentTimeMillis();
                 BuildBitMap buildBitMap = new BuildBitMap(bitmap, oLatitude, oLongitude, oAltitude, mActivity, mContext, cameraOrientation);
                 buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time,"");
-
+                strVoice = "";
                 if (sharedMap) {
                     googleShot = null;
                     Intent intent = new Intent(mContext, LandActivity.class);
@@ -126,10 +123,8 @@ public class TakePicture {
                     intent.putExtra("alt", oAltitude);
                     intent.putExtra("zoom", 15);
                     ((Activity) tContext).startActivityForResult(intent, SAVE_MAP);
-                } else {
-                    new ExitApp();
-                }
-
+                } else if (exitFlag)
+                    exitHandler.sendEmptyMessage(0);
             }
         };
 
@@ -139,11 +134,11 @@ public class TakePicture {
             @Override
             public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                 super.onCaptureCompleted(session, request, result);
-                try {
-                    createCameraPreview();
-                } catch (CameraAccessException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    createCameraPreview();
+//                } catch (CameraAccessException e) {
+//                    e.printStackTrace();
+//                }
             }
         };
 
@@ -183,6 +178,11 @@ public class TakePicture {
                 cameraSub.open(mWidth, mHeight);
             }
 
+            @Override
+            public void onClosed(@NonNull CameraCaptureSession session) {
+                super.onClosed(session);
+                MainActivity.stopBackgroundThread();
+            }
             @Override
             public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                 new Message().show("Configuration Change Failed");
