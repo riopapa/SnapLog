@@ -128,8 +128,14 @@ public class MainActivity extends AppCompatActivity {
             exitFlag = false;
             take_Picture();
         });
+
         ImageView btnShotExit = findViewById(R.id.btnShotExit);
         btnShotExit.setOnClickListener(v -> {
+            exitFlag = true;
+            take_Picture();
+        });
+        ImageView btnShotExit2 = findViewById(R.id.btnShotExit2);
+        btnShotExit2.setOnClickListener(v -> {
             exitFlag = true;
             take_Picture();
         });
@@ -208,6 +214,8 @@ public class MainActivity extends AppCompatActivity {
             sharedFace = (sharedFace == CameraCharacteristics.LENS_FACING_BACK) ?
                     CameraCharacteristics.LENS_FACING_FRONT: CameraCharacteristics.LENS_FACING_BACK;
             SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("face",sharedFace);
+            editor.apply();
             cameraSub.close();
             cameraSub.open(mWidth, mHeight);
             editor.putInt("face", sharedFace);

@@ -5,14 +5,15 @@ import static com.riopapa.snaplog.Vars.directory;
 import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
 import static com.riopapa.snaplog.Vars.sharedAutoLoad;
+import static com.riopapa.snaplog.Vars.sharedFace;
 import static com.riopapa.snaplog.Vars.sharedLocation;
 import static com.riopapa.snaplog.Vars.sharedLogo;
 import static com.riopapa.snaplog.Vars.sharedMap;
 import static com.riopapa.snaplog.Vars.sharedPref;
 import static com.riopapa.snaplog.Vars.sharedRadius;
 import static com.riopapa.snaplog.Vars.sharedSortType;
-import static com.riopapa.snaplog.Vars.sharedZoomValue;
 import static com.riopapa.snaplog.Vars.sharedWithPhoto;
+import static com.riopapa.snaplog.Vars.sharedZoomValue;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,8 +24,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.hardware.camera2.CameraCharacteristics;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -135,6 +136,7 @@ class Utils {
             editor.putString("alpha", "163");
             editor.putBoolean("WithPhoto", true);
             editor.putInt("logo", 0);
+            editor.putInt("face",  CameraCharacteristics.LENS_FACING_FRONT);
             editor.apply();
 //            editor.commit();
         }
@@ -146,6 +148,7 @@ class Utils {
         sharedWithPhoto = sharedPref.getBoolean("WithPhoto", true);
         sharedZoomValue = sharedPref.getInt("zoomValue", 15);
         sharedLogo = sharedPref.getInt("logo", 0);
+        sharedFace = sharedPref.getInt("face",CameraCharacteristics.LENS_FACING_FRONT);
         sharedMap = sharedPref.getBoolean("map", true);
     }
 
@@ -195,24 +198,11 @@ class Utils {
         canvas.drawBitmap(resultingImage, 0, 0, paint);
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, w-16, h-16, false);
-//        paint = new Paint();
-////        canvas = new Canvas(resultingImage);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
         canvas.drawBitmap(resizedBitmap,8,8,paint);
-        return resultingImage;
+        return Bitmap.createScaledBitmap(resultingImage, w/2, h/2, true);   // to fit button Size 71-> 36
     }
 
-//
-//    private  String getAppLabel(Context context) {
-//        PackageManager packageManager = context.getPackageManager();
-//        ApplicationInfo applicationInfo = null;
-//        try {
-//            applicationInfo = packageManager.getApplicationInfo(context.getApplicationInfo().packageName, 0);
-//        } catch (final PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "Unknown");
-//    }
     public Bitmap buildSignatureMap() {
         int [] logos = {R.mipmap.signature, R.mipmap.digital_logo, R.mipmap.gglogo};
 
