@@ -14,7 +14,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -47,8 +46,9 @@ class BuildBitMap {
         this.cameraOrientation = cameraOrientation;
     }
 
-    void makeOutMap(String sFood, String sName, String sAddress, boolean withPhoto, long nowTime, String suffix) {
+    void makeOutMap(String sFood, String sName, String sAddress, boolean withPhoto, long currTime, String suffix) {
         this.sFood = sFood; this.sPlace = sName; this.sAddress = sAddress;
+        this.nowTime = currTime;
         int width = outBitmap.getWidth();
         int height = outBitmap.getHeight();
         if (cameraOrientation == 6 && width > height)
@@ -59,19 +59,19 @@ class BuildBitMap {
             outBitmap = rotateBitMap(outBitmap, 180);
 
         if (withPhoto && suffix.length() == 0) {    // no suffix
-            String outFileName = sdfFileName.format(nowTime) + suffix;
+            String outFileName = sdfFileName.format(currTime) + suffix;
             File newFile = new File(directory, phonePrefix + outFileName + ".jpg");
             writeCameraFile(outBitmap, newFile);
             setNewFileExif(newFile);
 //            activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
         }
 
-        Bitmap mergedMap = markDateLocSignature(outBitmap, nowTime, suffix);
-        nowTime += 150;
+        Bitmap mergedMap = markDateLocSignature(outBitmap, currTime, suffix);
+        currTime += 150;
         String foodName = sFood.trim();
         if (foodName.length() > 2)
             foodName = "(" + foodName +")";
-        String outFileName2 = sdfFileName.format(nowTime) + "_" + sPlace + foodName;
+        String outFileName2 = sdfFileName.format(currTime) + "_" + sPlace + foodName;
         File newFile2 = new File(directory, phonePrefix + outFileName2 + suffix + "_ha.jpg");
         writeCameraFile(mergedMap, newFile2);
         setNewFileExif(newFile2);
@@ -140,13 +140,10 @@ class BuildBitMap {
     private void markFoodPlaceAddress(int width, int height, Canvas canvas) {
 
         int xPos = width / 2;
-        int fontSize = (height + width) / 64;  // gps
+        int fontSize = (height + width) / 80;  // gps
         int yPos = height - fontSize;
         if (width < height)
             yPos -= fontSize;
-//        yPos = drawTextOnCanvas(canvas, sLatLng, fontSize, xPos, yPos);
-//        fontSize = fontSize * 14 / 10;  // address
-//        yPos -= fontSize + fontSize / 6;
         yPos = drawTextOnCanvas(canvas, sAddress, fontSize, xPos, yPos);
         fontSize = fontSize * 12 / 10;  // Place
         yPos -= fontSize + fontSize / 4;

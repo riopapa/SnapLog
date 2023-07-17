@@ -21,6 +21,7 @@ import static com.riopapa.snaplog.Vars.mHeight;
 import static com.riopapa.snaplog.Vars.mTextureView;
 import static com.riopapa.snaplog.Vars.mWidth;
 import static com.riopapa.snaplog.Vars.now_time;
+import static com.riopapa.snaplog.Vars.sharedFace;
 import static com.riopapa.snaplog.Vars.sharedMap;
 import static com.riopapa.snaplog.Vars.sharedWithPhoto;
 import static com.riopapa.snaplog.Vars.strAddress;
@@ -34,6 +35,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -112,6 +114,14 @@ public class TakePicture {
                 Bitmap bitmap = BitmapFactory.decodeByteArray( bytes, 0, bytes.length ) ;
                 image.close();
                 now_time = System.currentTimeMillis();
+
+                if (sharedFace == CameraCharacteristics.LENS_FACING_BACK && cameraOrientation == 6) {
+                    Matrix rotateMatrix = new Matrix();
+                    rotateMatrix.postRotate(180);
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                            bitmap.getWidth(), bitmap.getHeight(), rotateMatrix, false);
+                }
+
                 BuildBitMap buildBitMap = new BuildBitMap(bitmap, oLatitude, oLongitude, oAltitude, mActivity, mContext, cameraOrientation);
                 buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time,"");
                 strVoice = "";
