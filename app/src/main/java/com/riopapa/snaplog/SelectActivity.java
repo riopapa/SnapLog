@@ -10,8 +10,8 @@ import static com.riopapa.snaplog.Vars.pageToken;
 import static com.riopapa.snaplog.Vars.placeInfos;
 import static com.riopapa.snaplog.Vars.placeType;
 import static com.riopapa.snaplog.Vars.selectActivity;
-import static com.riopapa.snaplog.Vars.sharedPref;
 import static com.riopapa.snaplog.Vars.sharedRadius;
+import static com.riopapa.snaplog.Vars.sharedSortType;
 import static com.riopapa.snaplog.Vars.utils;
 
 import android.os.Bundle;
@@ -49,9 +49,13 @@ public class SelectActivity extends AppCompatActivity {
                             public void run() {
                             waitTimer.start();
                             }
-                        }, 2000);
+                        }, 1000);
                     } else {
-                        sortPlaceInfos();
+                        waitTimer.cancel();
+                        if (sharedSortType.equals("name") && placeInfos.size() > 0)
+                            placeInfos.sort((arg0, arg1) -> arg0.oName.compareTo(arg1.oName));
+                        else if (sharedSortType.equals("distance") && placeInfos.size() > 0)
+                            placeInfos.sort((arg0, arg1) -> arg0.distance.compareTo(arg1.distance));
                         String s = "Total "+placeInfos.size()+" places retrieved";
                         utils.log("LIST", s);
                         Toast.makeText(mContext,s, Toast.LENGTH_SHORT).show();
@@ -60,21 +64,7 @@ public class SelectActivity extends AppCompatActivity {
                     }
                 }
             }
-            public void onFinish() { }
+            public void onFinish() { waitTimer.cancel();}
         }.start();
-    }
-
-    private void sortPlaceInfos() {
-
-        String sortType = sharedPref.getString("sort", "none");
-        switch(sortType) {
-            case "name":
-                placeInfos.sort((arg0, arg1) -> arg0.oName.compareTo(arg1.oName));
-                break;
-            case "distance":
-                placeInfos.sort((arg0, arg1) -> arg0.distance.compareTo(arg1.distance));
-                break;
-            default:
-        }
     }
 }

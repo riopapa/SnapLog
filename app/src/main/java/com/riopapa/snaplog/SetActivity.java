@@ -34,13 +34,13 @@ public class SetActivity extends Activity {
 
         sharedPref = mContext.getSharedPreferences("snap", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-
-        SwitchCompat switchCompat = findViewById(R.id.autoLoad);
-        switchCompat.setChecked(sharedAutoLoad);
-        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            sharedAutoLoad = !sharedAutoLoad;
-            switchCompat.setChecked(sharedAutoLoad);
-        });
+//
+//        SwitchCompat switchCompat = findViewById(R.id.autoLoad);
+//        switchCompat.setChecked(sharedAutoLoad);
+//        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            sharedAutoLoad = !sharedAutoLoad;
+//            switchCompat.setChecked(sharedAutoLoad);
+//        });
 
         sortArray = getResources().getStringArray(R.array.sort_values);
         for (int i = 0; i < sortArray.length; i++) {

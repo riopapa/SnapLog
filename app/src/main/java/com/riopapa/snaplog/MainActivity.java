@@ -69,6 +69,7 @@ import android.os.Message;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.TextureView;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         mPlace.setOnClickListener(v -> {
             pageToken = NO_MORE_PAGE;
             placeInfos = new ArrayList<>();
-            mPlace.setImageResource(typeIcons[typeNumber]);
+            mPlace.setVisibility(View.INVISIBLE);
             EditText et = findViewById(R.id.placeAddress);
             String placeName = et.getText().toString();
             if (placeName.startsWith("?")) {
@@ -161,7 +162,12 @@ public class MainActivity extends AppCompatActivity {
             new Timer().schedule(new TimerTask() {
                 public void run() {
                     selectPlace();
-                    mPlace.setImageBitmap(utils.maskedIcon(typeIcons[typeNumber]));
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mPlace.setVisibility(View.VISIBLE);
+                        }
+                    });
                 }
             }, 1500);
         });
@@ -175,14 +181,6 @@ public class MainActivity extends AppCompatActivity {
         tvAddress.setText(sharedLocation);
         mTextureView = findViewById(R.id.textureView);
         mTextureView.post(() -> utils.deleteOldLogFiles());
-//        if (sharedAutoLoad) {
-//            new PlaceRetrieve(mContext, oLatitude, oLongitude, placeType, pageToken, sharedRadius, byPlaceName);
-//            new Timer().schedule(new TimerTask() {
-//                public void run() {
-//                    selectPlace();
-//                }
-//            }, 15000);
-//        }
 
         show_logo();
 
