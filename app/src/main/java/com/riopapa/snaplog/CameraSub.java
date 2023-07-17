@@ -9,7 +9,6 @@ import static com.riopapa.snaplog.Vars.mCameraOpenCloseLock;
 import static com.riopapa.snaplog.Vars.mCaptureSession;
 import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.mImageReader;
-import static com.riopapa.snaplog.Vars.mPreviewRequest;
 import static com.riopapa.snaplog.Vars.mPreviewRequestBuilder;
 import static com.riopapa.snaplog.Vars.mPreviewSize;
 import static com.riopapa.snaplog.Vars.mTextureView;

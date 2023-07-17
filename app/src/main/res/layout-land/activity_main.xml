@@ -71,8 +71,8 @@
 
     <ImageButton
         android:id = "@+id/btnSpeak"
-        android:layout_width = "48dp"
-        android:layout_height = "48dp"
+        android:layout_width = "32dp"
+        android:layout_height = "32dp"
         android:layout_margin="32dp"
         android:background = "#00000000"
         android:contentDescription = "@string/todo"
@@ -116,8 +116,8 @@
 
     <ImageView
         android:id="@+id/btnShotExit"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/shot_exit"
@@ -129,8 +129,8 @@
 
     <ImageView
         android:id="@+id/btnShot"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/shot"
@@ -143,8 +143,8 @@
 
     <ImageView
         android:id="@+id/btnFacing"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/front_back"
@@ -157,8 +157,8 @@
 
     <ImageButton
         android:id="@+id/btnPlace"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
+        android:layout_width="71dp"
+        android:layout_height="71dp"
         android:layout_margin="16sp"
         android:background="#00000000"
         android:contentDescription="@string/todo"

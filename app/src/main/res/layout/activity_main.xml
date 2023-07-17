@@ -18,50 +18,52 @@
     />
 
     <TextureView
-        android:id="@+id/textureView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="4dp"
-        app:layout_constraintTop_toBottomOf="@id/type_recycler"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        />
+        android:id = "@+id/textureView"
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_margin = "4dp"
+        app:layout_constraintBottom_toBottomOf = "parent"
+        app:layout_constraintHorizontal_bias = "0.0"
+        app:layout_constraintLeft_toLeftOf = "parent"
+        app:layout_constraintRight_toRightOf = "parent"
+        app:layout_constraintTop_toBottomOf = "@id/type_recycler" />
 
     <ImageView
-        android:id="@+id/logo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:id="@+id/setting"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
-        android:src="@mipmap/my_face"
-        android:layout_margin="32dp"
+        android:src="@drawable/setting"
+        android:layout_margin="16dp"
         app:layout_constraintTop_toBottomOf="@id/type_recycler"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/map"
         />
 
     <ImageView
         android:id="@+id/map"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/include_map"
-        android:layout_margin="32dp"
-        app:layout_constraintLeft_toRightOf="@id/btnFacing"
-        app:layout_constraintRight_toLeftOf="@id/setting"
+        android:layout_margin="16dp"
+        app:layout_constraintLeft_toRightOf="@id/setting"
+        app:layout_constraintRight_toLeftOf="@id/logo"
         app:layout_constraintTop_toBottomOf="@id/type_recycler"
         />
 
     <ImageView
-        android:id="@+id/setting"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:id="@+id/logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
-        android:src="@drawable/setting"
-        android:layout_margin="32dp"
+        android:src="@mipmap/my_face"
+        android:layout_margin="16dp"
         app:layout_constraintTop_toBottomOf="@id/type_recycler"
+        app:layout_constraintLeft_toRightOf="@id/map"
         app:layout_constraintRight_toRightOf="parent"
         />
 
@@ -85,9 +87,9 @@
 
     <ImageButton
         android:id = "@+id/btnSpeak"
-        android:layout_width = "54dp"
-        android:layout_height = "54dp"
-        android:layout_margin = "8sp"
+        android:layout_width = "32dp"
+        android:layout_height = "32dp"
+        android:layout_margin = "16sp"
         android:background = "#00000000"
         android:contentDescription = "@string/todo"
         android:src = "@drawable/micro_phone"
@@ -119,12 +121,11 @@
 
     <ImageButton
         android:id="@+id/btnPlace"
-        android:layout_width="0dp"
-        android:layout_height="54dp"
+        android:layout_width="71dp"
+        android:layout_height="71dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/place"
-        app:layout_constraintHorizontal_weight="2"
         app:layout_constraintLeft_toRightOf="@id/placeAddress"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btnShotExit"
@@ -132,8 +133,8 @@
 
     <ImageView
         android:id="@+id/btnFacing"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/front_back"
@@ -145,8 +146,8 @@
 
     <ImageView
         android:id="@+id/btnShot"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/shot"
@@ -158,8 +159,8 @@
 
     <ImageView
         android:id="@+id/btnShotExit"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/shot_exit"
