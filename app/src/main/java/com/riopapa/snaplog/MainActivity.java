@@ -169,14 +169,14 @@ public class MainActivity extends AppCompatActivity {
         tvAddress.setText(sharedLocation);
         mTextureView = findViewById(R.id.textureView);
         mTextureView.post(() -> utils.deleteOldLogFiles());
-        if (sharedAutoLoad) {
-            new PlaceRetrieve(mContext, oLatitude, oLongitude, placeType, pageToken, sharedRadius, byPlaceName);
-            new Timer().schedule(new TimerTask() {
-                public void run() {
-                    selectPlace();
-                }
-            }, 15000);
-        }
+//        if (sharedAutoLoad) {
+//            new PlaceRetrieve(mContext, oLatitude, oLongitude, placeType, pageToken, sharedRadius, byPlaceName);
+//            new Timer().schedule(new TimerTask() {
+//                public void run() {
+//                    selectPlace();
+//                }
+//            }, 15000);
+//        }
 
         show_logo();
 
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
     };
     private void start_Setting() {
-        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        Intent intent = new Intent(MainActivity.this, SetActivity.class);
 //        startActivityForResult(intent);
         startActivity(intent);
     }
@@ -366,7 +366,6 @@ public class MainActivity extends AppCompatActivity {
 
     public final static Handler orientationHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-            Log.w("Handler", "oritanti "+msg.what);
             cameraOrientation = msg.what;
             if (cameraOrientation == 1) {
                 mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

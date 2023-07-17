@@ -17,7 +17,6 @@ public class ConfigureTransform {
             return;
         }
         int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
-        Log.w("ConfigureTransform","rotation "+rotation+", set "+viewWidth+"x"+viewHeight);
         Matrix matrix = new Matrix();
         RectF viewRect = new RectF(0, 0, viewWidth, viewHeight);
         RectF bufferRect = new RectF(0, 0, mPreviewSize.getHeight(), mPreviewSize.getWidth());

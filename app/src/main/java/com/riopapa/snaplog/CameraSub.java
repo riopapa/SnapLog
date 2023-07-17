@@ -26,6 +26,8 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.params.OutputConfiguration;
+import android.hardware.camera2.params.SessionConfiguration;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ImageReader;
 import android.util.Log;
@@ -41,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class CameraSub {
@@ -205,40 +208,69 @@ public class CameraSub {
                     = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
 
-            // Here, we create a CameraCaptureSession for camera preview.
-            mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
-                    new CameraCaptureSession.StateCallback() {
+            mCameraDevice.createCaptureSession(
+                    new SessionConfiguration(
+                            SessionConfiguration.SESSION_REGULAR,
+                            Collections.singletonList(new OutputConfiguration(surface)),
+                            Executors.newCachedThreadPool(), // or Executors.newSingleThreadExecutor(),
+                            new CameraCaptureSession.StateCallback() {
+                                @Override
+                                public void onConfigured(CameraCaptureSession cameraCaptureSession) {
+                                    Log.i("log I", "createCaptureSession::onConfigured");
+                                    if (null == mCameraDevice) {
+                                        return; // camera is already closed
+                                    }
+                                    mCaptureSession = cameraCaptureSession;
+                                    try {
+                                        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+                                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                                        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
-                        @Override
-                        public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                            // The camera is already closed
-                            if (null == mCameraDevice) {
-                                return;
+                                        mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
+                                        Log.i("log I", "CameraPreviewSession has been started");
+                                    } catch (Exception e) {
+                                        Log.e("log I", "createCaptureSession failed", e);
+                                    }
+                                }
+
+                                @Override
+                                public void onConfigureFailed(CameraCaptureSession cameraCaptureSession) {
+                                    Log.e("log I", "createCameraPreviewSession failed");
+                                }
                             }
-
-                            // When the session is ready, we start displaying the preview.
-                            mCaptureSession = cameraCaptureSession;
-                            try {
-                                // Auto focus should be continuous for camera preview.
-                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-
-                                // Finally, we start displaying the camera preview.
-                                mPreviewRequest = mPreviewRequestBuilder.build();
-                                mCaptureSession.setRepeatingRequest(mPreviewRequest,
-                                        null, mBackgroundHandler);
-                            } catch (CameraAccessException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onConfigureFailed(
-                                @NonNull CameraCaptureSession cameraCaptureSession) {
-                            new Message().show("onConfigureFailed Failed");
-                        }
-                    }, null
+                    )
             );
+            // Here, we create a CameraCaptureSession for camera preview.
+//            mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
+//                    new CameraCaptureSession.StateCallback() {
+//
+//                        @Override
+//                        public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
+//                            // The camera is already closed
+//                            if (null == mCameraDevice) {
+//                                return;
+//                            }
+//                            // When the session is ready, we start displaying the preview.
+//                            mCaptureSession = cameraCaptureSession;
+//                            try {
+//                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+//                                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+//                                mPreviewRequest = mPreviewRequestBuilder.build();
+//                                mCaptureSession.setRepeatingRequest(mPreviewRequest,
+//                                        null, mBackgroundHandler);
+//                            } catch (CameraAccessException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onConfigureFailed(
+//                                @NonNull CameraCaptureSession cameraCaptureSession) {
+//                            new Message().show("onConfigureFailed Failed");
+//                        }
+//                    }, null
+//            );
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
