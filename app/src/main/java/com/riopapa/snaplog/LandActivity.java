@@ -37,14 +37,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
         setContentView(R.layout.activity_land);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        if (cameraOrientation == 1) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        setRequestedOrientation((cameraOrientation == 1) ?
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.include_map);
         mapFragment.getMapAsync(this);
     }
 
@@ -68,12 +66,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
         mGoogleMap.snapshot(callback);
     }
 
-    GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
-        @Override
-        public void onSnapshotReady(Bitmap snapshot) {
-            googleShot = mergeScaleBitmap(snapshot, getScaleMap(sharedZoomValue));
-            finish();
-        }
+    GoogleMap.SnapshotReadyCallback callback = snapshot -> {
+        googleShot = mergeScaleBitmap(snapshot, getScaleMap(sharedZoomValue));
+        finish();
     };
 
     private Bitmap mergeScaleBitmap(Bitmap mapImage, Bitmap scaleMap) {

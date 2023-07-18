@@ -25,7 +25,6 @@ import static com.riopapa.snaplog.Vars.now_time;
 import static com.riopapa.snaplog.Vars.pageToken;
 import static com.riopapa.snaplog.Vars.placeInfos;
 import static com.riopapa.snaplog.Vars.placeType;
-import static com.riopapa.snaplog.Vars.sharedAutoLoad;
 import static com.riopapa.snaplog.Vars.sharedFace;
 import static com.riopapa.snaplog.Vars.sharedLocation;
 import static com.riopapa.snaplog.Vars.sharedLogo;
@@ -70,7 +69,6 @@ import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -151,8 +149,7 @@ public class MainActivity extends AppCompatActivity {
             pageToken = NO_MORE_PAGE;
             placeInfos = new ArrayList<>();
             mPlace.setVisibility(View.INVISIBLE);
-            EditText et = findViewById(R.id.placeAddress);
-            String placeName = et.getText().toString();
+            String placeName = tvAddress.getText().toString();
             if (placeName.startsWith("?")) {
                 String[] placeNames = placeName.split("\n");
                 byPlaceName = placeNames[0].substring(1);
@@ -162,14 +159,9 @@ public class MainActivity extends AppCompatActivity {
             new Timer().schedule(new TimerTask() {
                 public void run() {
                     selectPlace();
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mPlace.setVisibility(View.VISIBLE);
-                        }
-                    });
+                    mActivity.runOnUiThread(() -> mPlace.setVisibility(View.VISIBLE));
                 }
-            }, 1500);
+            }, 3000);
         });
 
         mPlace.setImageBitmap(utils.maskedIcon(typeIcons[typeNumber]));
@@ -193,8 +185,8 @@ public class MainActivity extends AppCompatActivity {
             show_logo();
         });
 
-        ImageView ivMap = findViewById(R.id.map);
-        float opacity = (sharedMap) ? 1f : 0.3f;
+        ImageView ivMap = findViewById(R.id.include_map);
+        float opacity = (sharedMap) ? 1f : 0.2f;
         ivMap.setAlpha(opacity);
         ivMap.setOnClickListener(view -> {
             sharedMap = !sharedMap;
@@ -204,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
             float opacity1 = (sharedMap) ? 1f : 0.2f;
             ivMap.setAlpha(opacity1);
         });
-
 
         ImageView ivFace = findViewById(R.id.btnFacing);
         ivFace.setOnClickListener(view -> {
@@ -354,7 +345,6 @@ public class MainActivity extends AppCompatActivity {
         return aNI != null && aNI.isConnected();
     }
 
-
     private void startGetVoice() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -385,6 +375,23 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void take_Picture() {
+
+        ImageView btnShot = findViewById(R.id.btnShot);
+        btnShot.setVisibility(View.INVISIBLE);
+        ImageView btnShotE = findViewById(R.id.btnShotExit);
+        btnShotE.setVisibility(View.INVISIBLE);
+        ImageView btnShot2 = findViewById(R.id.btnShotExit2);
+        btnShot2.setVisibility(View.INVISIBLE);
+
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                mActivity.runOnUiThread(() -> {
+                    btnShot.setVisibility(View.VISIBLE);
+                    btnShotE.setVisibility(View.VISIBLE);
+                    btnShot2.setVisibility(View.VISIBLE);
+                });
+            }
+        }, 5000);   // wait while photo generated
 
         cameraOrientation = deviceOrientation.orientation;
 
