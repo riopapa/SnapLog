@@ -218,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         startBackgroundThread();
 
         if (mTextureView.isAvailable()) {
@@ -233,6 +232,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
+
+        super.onResume();
     }
 
     @Override
@@ -298,8 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
     static void inflateAddress() {
         mActivity.runOnUiThread(() -> {
-            String s = strPlace + "\n" + strAddress;
-            tvAddress.setText(s);
+            tvAddress.setText(sharedLocation);
         });
     }
 
@@ -317,12 +317,14 @@ public class MainActivity extends AppCompatActivity {
         } else if (requestCode == SAVE_MAP) {
             save_GoogleMap(googleShot);
             if (exitFlag)
-                exitHandler.sendEmptyMessage(0);
+                galleryHandler.sendEmptyMessage(0);
         } else {
             Toast.makeText(mContext, "Request Code:" + requestCode + ", Result Code:" + resultCode + " not as expected", Toast.LENGTH_LONG).show();
         }
     }
     private void startBackgroundThread() {
+        if (mBackgroundThread != null)
+            stopBackgroundThread();
         mBackgroundThread = new HandlerThread("CameraBackground");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
@@ -397,16 +399,15 @@ public class MainActivity extends AppCompatActivity {
 
         sharedLocation = tvAddress.getText().toString();
 
-        try {
-            strPlace = sharedLocation.substring(0, sharedLocation.indexOf("\n"));
-            if (strPlace.equals("")) {
-                strPlace = " ";
-            }
-            strAddress = sharedLocation.substring(sharedLocation.indexOf("\n") + 1);
-        } catch (Exception e) {
-            strPlace = strAddress;
-            strAddress = "?";
+        String [] s = sharedLocation.split("\n");
+        if (s.length > 1) {
+            strPlace = s[0];
+            strAddress = s[1];
+        } else {
+            strPlace = "";
+            strAddress = s[0];
         }
+
         strVoice = tvVoice.getText().toString();
         if (strVoice.length() < 1)
             strVoice = " ";
@@ -417,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             takePicture.shot(this);
         } catch (CameraAccessException e) {
+            abortHandler.sendEmptyMessage(44);
             throw new RuntimeException(e);
         }
     }
@@ -438,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
         buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time, "Map");
     }
 
-    public final static Handler exitHandler = new Handler(Looper.getMainLooper()) {
+    public final static Handler galleryHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             cameraSub.close();
             stopBackgroundThread();
@@ -457,5 +459,32 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public final static Handler abortHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            cameraSub.close();
+            stopBackgroundThread();
+            String abortMsg = "abort Snap Log " + msg.what;
+            if (msg.what == 11)
+                abortMsg = "CameraSub : createCameraPreviewSession failed";
+            else if (msg.what == 22)
+                abortMsg = "CameraSub : CameraAccessException";
+            else if (msg.what == 33)
+                abortMsg = "TakePicture : Configuration Change Failed";
+            else if (msg.what == 44)
+                abortMsg = "takePicture : not started, CameraAccessException";
+            else if (msg.what == 55)
+                abortMsg = "CameraSub : camera open Exception";
+
+            utils.log("abort", abortMsg);
+            Toast.makeText(mContext," abort # "+abortMsg, Toast.LENGTH_LONG).show();
+            mActivity.finish();
+            new Timer().schedule(new TimerTask() {
+                public void run() {
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(0);
+                }
+            }, 3000);   // wait while photo generated
+        }
+    };
 
 }

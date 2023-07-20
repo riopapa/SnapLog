@@ -4,6 +4,7 @@ import static android.content.Context.LOCATION_SERVICE;
 
 import static com.riopapa.snaplog.Vars.isPlaceNull;
 import static com.riopapa.snaplog.Vars.mContext;
+import static com.riopapa.snaplog.Vars.strPlace;
 import static com.riopapa.snaplog.Vars.utils;
 
 import android.Manifest;
@@ -69,6 +70,7 @@ class GPSTracker  implements LocationListener {
             oAltitude = location.getAltitude();
             Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
             strAddress = GPS2Address.get(geocoder, oLatitude, oLongitude);
+            strPlace = "";
             MainActivity.inflateAddress();
         } else {
             updateCount = 0;

@@ -59,10 +59,8 @@ public class Vars {
 
     static TextureView mTextureView;
     static Size mPreviewSize;
-    static CameraCaptureSession mCameraSession;
-    static CaptureRequest.Builder mCaptureRequestBuilder;
-    static HandlerThread mBackgroundThread;
-    static Handler mBackgroundHandler;
+    static HandlerThread mBackgroundThread = null;
+    static Handler mBackgroundHandler = null;
 
     static int mWidth, mHeight;
 

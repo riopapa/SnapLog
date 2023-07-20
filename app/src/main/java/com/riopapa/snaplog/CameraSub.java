@@ -1,5 +1,8 @@
 package com.riopapa.snaplog;
 
+import static com.riopapa.snaplog.MainActivity.abortHandler;
+import static com.riopapa.snaplog.MainActivity.galleryHandler;
+import static com.riopapa.snaplog.MainActivity.stopBackgroundThread;
 import static com.riopapa.snaplog.Vars.imageDimensions;
 import static com.riopapa.snaplog.Vars.mActivity;
 import static com.riopapa.snaplog.Vars.mBackgroundHandler;
@@ -74,7 +77,7 @@ public class CameraSub {
 
             manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            e.printStackTrace();
+            abortHandler.sendEmptyMessage(55);
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera opening.", e);
         }
@@ -209,69 +212,40 @@ public class CameraSub {
 
             mCameraDevice.createCaptureSession(
                     new SessionConfiguration(
-                            SessionConfiguration.SESSION_REGULAR,
-                            Collections.singletonList(new OutputConfiguration(surface)),
-                            Executors.newCachedThreadPool(), // or Executors.newSingleThreadExecutor(),
-                            new CameraCaptureSession.StateCallback() {
-                                @Override
-                                public void onConfigured(CameraCaptureSession cameraCaptureSession) {
-                                    Log.i("log I", "createCaptureSession::onConfigured");
-                                    if (null == mCameraDevice) {
-                                        return; // camera is already closed
-                                    }
-                                    mCaptureSession = cameraCaptureSession;
-                                    try {
-                                        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-                                        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
-                                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-
-                                        mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
-                                        Log.i("log I", "CameraPreviewSession has been started");
-                                    } catch (Exception e) {
-                                        Log.e("log I", "createCaptureSession failed", e);
-                                    }
+                        SessionConfiguration.SESSION_REGULAR,
+                        Collections.singletonList(new OutputConfiguration(surface)),
+                        Executors.newCachedThreadPool(), // or Executors.newSingleThreadExecutor(),
+                        new CameraCaptureSession.StateCallback() {
+                            @Override
+                            public void onConfigured(CameraCaptureSession cameraCaptureSession) {
+//                                    Log.i("log I", "createCaptureSession::onConfigured");
+                                if (null == mCameraDevice) {
+                                    return; // camera is already closed
                                 }
+                                mCaptureSession = cameraCaptureSession;
+                                try {
+                                    mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+                                            CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                                    mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                                            CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
-                                @Override
-                                public void onConfigureFailed(CameraCaptureSession cameraCaptureSession) {
-                                    Log.e("log I", "createCameraPreviewSession failed");
+                                    mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, mBackgroundHandler);
+//                                        Log.w("log I", "CameraPreviewSession has been started");
+                                } catch (Exception e) {
+                                    Log.e("CameraSub", "createCaptureSession failed", e);
                                 }
                             }
+
+                            @Override
+                            public void onConfigureFailed(CameraCaptureSession cameraCaptureSession) {
+                                abortHandler.sendEmptyMessage(11);
+                            }
+                        }
                     )
             );
-            // Here, we create a CameraCaptureSession for camera preview.
-//            mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
-//                    new CameraCaptureSession.StateCallback() {
-//
-//                        @Override
-//                        public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-//                            // The camera is already closed
-//                            if (null == mCameraDevice) {
-//                                return;
-//                            }
-//                            // When the session is ready, we start displaying the preview.
-//                            mCaptureSession = cameraCaptureSession;
-//                            try {
-//                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-//                                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-//                                mPreviewRequest = mPreviewRequestBuilder.build();
-//                                mCaptureSession.setRepeatingRequest(mPreviewRequest,
-//                                        null, mBackgroundHandler);
-//                            } catch (CameraAccessException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onConfigureFailed(
-//                                @NonNull CameraCaptureSession cameraCaptureSession) {
-//                            new Message().show("onConfigureFailed Failed");
-//                        }
-//                    }, null
-//            );
+
         } catch (CameraAccessException e) {
-            e.printStackTrace();
+            abortHandler.sendEmptyMessage(22);
         }
     }
 

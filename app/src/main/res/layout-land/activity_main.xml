@@ -158,8 +158,8 @@
 
     <ImageView
         android:id="@+id/btnFacing"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/front_back"

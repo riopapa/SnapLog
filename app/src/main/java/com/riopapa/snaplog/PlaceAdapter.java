@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.riopapa.snaplog.GPSTracker.oLatitude;
 import static com.riopapa.snaplog.GPSTracker.oLongitude;
+import static com.riopapa.snaplog.Vars.sharedLocation;
 import static com.riopapa.snaplog.Vars.strAddress;
 import static com.riopapa.snaplog.Vars.strPlace;
 import static com.riopapa.snaplog.Vars.isPlaceNull;
@@ -41,6 +42,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
                 int idx = getAdapterPosition();
                 strPlace = placeInfos.get(idx).oName;
                 strAddress = placeInfos.get(idx).oAddress;
+                sharedLocation = strPlace + "\n" + strAddress;
+                utils.putPlacePreference();
                 oLatitude = Double.parseDouble(placeInfos.get(idx).oLat);
                 oLongitude = Double.parseDouble(placeInfos.get(idx).oLng);
                 MainActivity.inflateAddress();
@@ -61,8 +64,10 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
     @Override
     public void onBindViewHolder(@NonNull PlaceHolder viewHolder, int position) {
 
+        int textColor = 0xFF000000;
         int icon = getIconRaw(placeInfos.get(position).oIcon);
         if (icon == -1) {
+            textColor = 0xFFFF0000;
             String s = placeInfos.get(position).oIcon;
             utils.log("icon error "+s,"https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/"+s+"-71.png");
             Toast.makeText(mContext,"UnKnown Icon ["+s+"]",Toast.LENGTH_LONG).show();
@@ -70,7 +75,9 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
             placeInfos.get(position).setoName(placeInfos.get(position).oName+" "+s);
         }
         viewHolder.tvName.setText(placeInfos.get(position).oName);
+        viewHolder.tvName.setTextColor(textColor);
         viewHolder.tvAddress.setText(placeInfos.get(position).oAddress);
+        viewHolder.tvAddress.setTextColor(textColor);
         viewHolder.ivIcon.setImageResource(icon);
     }
 
