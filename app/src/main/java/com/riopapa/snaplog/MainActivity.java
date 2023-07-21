@@ -7,10 +7,8 @@ import static com.riopapa.snaplog.Vars.NO_MORE_PAGE;
 import static com.riopapa.snaplog.Vars.REQUEST_CAMERA_PERMISSION;
 import static com.riopapa.snaplog.Vars.SAVE_MAP;
 import static com.riopapa.snaplog.Vars.byPlaceName;
-import static com.riopapa.snaplog.Vars.cameraOrientation;
 import static com.riopapa.snaplog.Vars.cameraSub;
 import static com.riopapa.snaplog.Vars.currActivity;
-import static com.riopapa.snaplog.Vars.deviceOrientation;
 import static com.riopapa.snaplog.Vars.exitFlag;
 import static com.riopapa.snaplog.Vars.googleShot;
 import static com.riopapa.snaplog.Vars.mActivity;
@@ -26,6 +24,7 @@ import static com.riopapa.snaplog.Vars.pageToken;
 import static com.riopapa.snaplog.Vars.placeInfos;
 import static com.riopapa.snaplog.Vars.placeType;
 import static com.riopapa.snaplog.Vars.sharedFace;
+import static com.riopapa.snaplog.Vars.sharedLandscape;
 import static com.riopapa.snaplog.Vars.sharedLocation;
 import static com.riopapa.snaplog.Vars.sharedLogo;
 import static com.riopapa.snaplog.Vars.sharedMap;
@@ -90,12 +89,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-//        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//        setFullScreen();
+
+
         currActivity = this.getClass().getSimpleName();
         mActivity = this;
         mContext = getApplicationContext();
+        utils = new Utils(this);
+        utils.getPreference();
+        setContentView(R.layout.activity_main);
+
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getApplicationContext()
                     .getPackageName(), PackageManager.GET_PERMISSIONS);
@@ -107,15 +109,12 @@ public class MainActivity extends AppCompatActivity {
 
         new FullScreen().set(this, Objects.requireNonNull(getSupportActionBar()));
         mTextureView = findViewById(R.id.textureView);
-        utils = new Utils(this);
 
-        utils.getPreference();
         map_api_key = getString(R.string.maps_api_key);
         pageToken = NO_MORE_PAGE;
         placeInfos = new ArrayList<>();
         tvVoice = findViewById(R.id.textVoice);
         tvAddress = findViewById(R.id.placeAddress);
-
 
         typeInfos = new ArrayList<>();
         for (int i = 0; i < typeNames.length; i++) {
@@ -199,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView ivFace = findViewById(R.id.btnFacing);
         ivFace.setOnClickListener(view -> {
-
             sharedFace = (sharedFace == CameraCharacteristics.LENS_FACING_BACK) ?
                     CameraCharacteristics.LENS_FACING_FRONT: CameraCharacteristics.LENS_FACING_BACK;
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -207,13 +205,25 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
             cameraSub.close();
             cameraSub.open(mWidth, mHeight);
-            editor.putInt("face", sharedFace);
+        });
+
+        ImageView ivLand = findViewById(R.id.rotate);
+        ivLand.setImageResource((sharedLandscape) ? R.drawable.portrait: R.drawable.landscape);
+        ivLand.setOnClickListener(view -> {
+            sharedLandscape = !sharedLandscape;
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("landscape",sharedLandscape);
             editor.apply();
+            cameraSub.close();
+            int temp = mHeight; mHeight = mWidth; mWidth = temp;
+            cameraSub.open(mWidth, mHeight);
+            orientationHandler.sendEmptyMessage(0);
+            ivLand.setImageResource((sharedLandscape) ? R.drawable.portrait: R.drawable.landscape);
         });
 
         ImageView ivSet = findViewById(R.id.setting);
         ivSet.setOnClickListener(view -> start_Setting());
-
+        orientationHandler.sendEmptyMessage(0);
     }
 
     @Override
@@ -227,12 +237,11 @@ public class MainActivity extends AppCompatActivity {
             }
             cameraSub.open(mTextureView.getWidth(), mTextureView.getHeight());
             takePicture = new TakePicture();
-            deviceOrientation = new DeviceOrientation();
+//            deviceOrientation = new DeviceOrientation();
             showTypeAdaptor();
         } else {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
-
         super.onResume();
     }
 
@@ -243,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private final TextureView.SurfaceTextureListener mSurfaceTextureListener
+    private static final TextureView.SurfaceTextureListener mSurfaceTextureListener
             = new TextureView.SurfaceTextureListener() {
 
         @Override
@@ -288,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static void showTypeAdaptor() {
         RecyclerView typeRecyclerView = mActivity.findViewById(R.id.type_recycler);
-        int layoutOrientation = (cameraOrientation == 1) ?
+        int layoutOrientation = (sharedLandscape) ?
                 RecyclerView.VERTICAL : RecyclerView.HORIZONTAL;
         LinearLayoutManager mLinearLayoutManager
                 = new LinearLayoutManager(mContext, layoutOrientation, false);
@@ -364,15 +373,14 @@ public class MainActivity extends AppCompatActivity {
 
     public final static Handler orientationHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-            cameraOrientation = msg.what;
-            if (cameraOrientation == 1) {
-                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            } else {
-                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            }
+
+            mActivity.setRequestedOrientation((sharedLandscape) ?
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             cameraSub.close();
-            cameraSub.open(mWidth,mHeight);
-//            showTypeAdaptor();
+            mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+//
+//            cameraSub.open(mWidth,mHeight);
         }
     };
 
@@ -394,9 +402,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }, 5000);   // wait while photo generated
-
-        cameraOrientation = deviceOrientation.orientation;
-
         sharedLocation = tvAddress.getText().toString();
 
         String [] s = sharedLocation.split("\n");
@@ -436,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private static void save_GoogleMap(Bitmap googleShot) {
-        BuildBitMap buildBitMap = new BuildBitMap(googleShot, oLatitude, oLongitude, oAltitude, mActivity, mContext, cameraOrientation);
+        BuildBitMap buildBitMap = new BuildBitMap(googleShot, oLatitude, oLongitude, oAltitude, mActivity, mContext);
         buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time, "Map");
     }
 

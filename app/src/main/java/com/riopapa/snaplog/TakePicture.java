@@ -6,8 +6,6 @@ import static com.riopapa.snaplog.GPSTracker.oLongitude;
 import static com.riopapa.snaplog.MainActivity.abortHandler;
 import static com.riopapa.snaplog.MainActivity.galleryHandler;
 import static com.riopapa.snaplog.Vars.SAVE_MAP;
-import static com.riopapa.snaplog.Vars.cameraOrientation;
-import static com.riopapa.snaplog.Vars.deviceOrientation;
 import static com.riopapa.snaplog.Vars.exitFlag;
 import static com.riopapa.snaplog.Vars.googleShot;
 import static com.riopapa.snaplog.Vars.mActivity;
@@ -17,6 +15,7 @@ import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.mTextureView;
 import static com.riopapa.snaplog.Vars.now_time;
 import static com.riopapa.snaplog.Vars.sharedFace;
+import static com.riopapa.snaplog.Vars.sharedLandscape;
 import static com.riopapa.snaplog.Vars.sharedMap;
 import static com.riopapa.snaplog.Vars.sharedWithPhoto;
 import static com.riopapa.snaplog.Vars.strAddress;
@@ -77,8 +76,8 @@ public class TakePicture {
                 break;
             }
         }
-
-        cameraOrientation = deviceOrientation.orientation;
+//
+//        cameraOrientation = deviceOrientation.orientation;
 
         ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
         List<Surface> outputSurfaces = new ArrayList<>(2);
@@ -99,14 +98,14 @@ public class TakePicture {
             image.close();
             now_time = System.currentTimeMillis();
 
-            if (sharedFace == CameraCharacteristics.LENS_FACING_BACK && cameraOrientation == 6) {
-                Matrix rotateMatrix = new Matrix();
-                rotateMatrix.postRotate(180);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                        bitmap.getWidth(), bitmap.getHeight(), rotateMatrix, false);
-            }
+//            if (sharedFace == CameraCharacteristics.LENS_FACING_BACK && !sharedLandscape) {
+//                Matrix rotateMatrix = new Matrix();
+//                rotateMatrix.postRotate(180);
+//                bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+//                        bitmap.getWidth(), bitmap.getHeight(), rotateMatrix, false);
+//            }
 
-            BuildBitMap buildBitMap = new BuildBitMap(bitmap, oLatitude, oLongitude, oAltitude, mActivity, mContext, cameraOrientation);
+            BuildBitMap buildBitMap = new BuildBitMap(bitmap, oLatitude, oLongitude, oAltitude, mActivity, mContext);
             buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time,"");
             strVoice = "";
             if (sharedMap) {

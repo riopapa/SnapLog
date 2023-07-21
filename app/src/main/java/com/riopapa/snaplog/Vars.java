@@ -34,7 +34,7 @@ public class Vars {
     static String sharedAlpha;
     static String sharedVoice;
     static String sharedLocation;
-    static boolean sharedWithPhoto;
+    static boolean sharedWithPhoto, sharedLandscape;
     static int sharedLogo;
     static int sharedZoomValue;
     static boolean sharedMap;
@@ -74,8 +74,6 @@ public class Vars {
     static TextView tvAddress;
     static TextView tvVoice;
     static Context mContext = null;
-
-    static int cameraOrientation;
 
     /* place select related variables */
     static String NO_MORE_PAGE = "no more";

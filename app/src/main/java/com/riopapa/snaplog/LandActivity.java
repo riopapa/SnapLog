@@ -2,8 +2,8 @@ package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.GPSTracker.oLatitude;
 import static com.riopapa.snaplog.GPSTracker.oLongitude;
-import static com.riopapa.snaplog.Vars.cameraOrientation;
 import static com.riopapa.snaplog.Vars.googleShot;
+import static com.riopapa.snaplog.Vars.sharedLandscape;
 import static com.riopapa.snaplog.Vars.sharedZoomValue;
 
 import android.content.pm.ActivityInfo;
@@ -37,7 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
         setContentView(R.layout.activity_land);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        setRequestedOrientation((cameraOrientation == 1) ?
+        setRequestedOrientation((sharedLandscape) ?
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 

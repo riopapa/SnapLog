@@ -6,6 +6,7 @@ import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
 import static com.riopapa.snaplog.Vars.sharedAutoLoad;
 import static com.riopapa.snaplog.Vars.sharedFace;
+import static com.riopapa.snaplog.Vars.sharedLandscape;
 import static com.riopapa.snaplog.Vars.sharedLocation;
 import static com.riopapa.snaplog.Vars.sharedLogo;
 import static com.riopapa.snaplog.Vars.sharedMap;
@@ -134,6 +135,7 @@ class Utils {
             editor.putString("sort", "none");
             editor.putInt("zoomValue", 15);
             editor.putString("alpha", "163");
+            editor.putBoolean("landscape", true);
             editor.putBoolean("WithPhoto", true);
             editor.putInt("logo", 0);
             editor.putInt("face",  CameraCharacteristics.LENS_FACING_FRONT);
@@ -146,6 +148,7 @@ class Utils {
         sharedAlpha = sharedPref.getString("alpha", "163");
         sharedLocation = sharedPref.getString("location","");
         sharedWithPhoto = sharedPref.getBoolean("WithPhoto", true);
+        sharedLandscape = sharedPref.getBoolean("landscape", true);
         sharedZoomValue = sharedPref.getInt("zoomValue", 15);
         sharedLogo = sharedPref.getInt("logo", 0);
         sharedFace = sharedPref.getInt("face",CameraCharacteristics.LENS_FACING_FRONT);
@@ -204,7 +207,7 @@ class Utils {
     }
 
     public Bitmap buildSignatureMap() {
-        int [] logos = {R.mipmap.signature, R.mipmap.digital_logo, R.mipmap.gglogo};
+        int [] logos = {R.mipmap.my_sign, R.mipmap.digital_logo, R.mipmap.gglogo};
 
         Bitmap sigMap;
         File sigFile = new File (Environment.getExternalStorageDirectory(),"signature.png");
@@ -219,10 +222,10 @@ class Utils {
         Bitmap newMap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(newMap);
         Paint p = new Paint();
-        p.setAlpha(120);
+        p.setAlpha(Integer.parseInt(sharedAlpha));
         canvas.drawBitmap(sigMap, 0, 0, p);
-        width = 240;
-        height = 240 * sigMap.getHeight() / sigMap.getWidth();
+        width = 320;
+        height = 320 * sigMap.getHeight() / sigMap.getWidth();
         return Bitmap.createScaledBitmap(newMap, width, height, false);
     }
 }

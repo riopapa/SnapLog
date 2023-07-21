@@ -1,17 +1,22 @@
 package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.Vars.directory;
+import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
+import static com.riopapa.snaplog.Vars.sharedFace;
+import static com.riopapa.snaplog.Vars.sharedLandscape;
 import static com.riopapa.snaplog.Vars.sigMap;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.hardware.camera2.CameraCharacteristics;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -37,13 +42,11 @@ class BuildBitMap {
     Bitmap outBitmap;
     Activity activity;
     Context context;
-    int cameraOrientation;
 
-    public BuildBitMap(Bitmap outBitmap, double latitude, double longitude, double altitude, Activity activity, Context context, int cameraOrientation) {
+    public BuildBitMap(Bitmap outBitmap, double latitude, double longitude, double altitude, Activity activity, Context context) {
         this.latitude = latitude; this.longitude = longitude; this.altitude = altitude;
         this.outBitmap = outBitmap;
         this.activity = activity;this.context = context;
-        this.cameraOrientation = cameraOrientation;
     }
 
     void makeOutMap(String sFood, String sName, String sAddress, boolean withPhoto, long currTime, String suffix) {
@@ -51,12 +54,12 @@ class BuildBitMap {
         this.nowTime = currTime;
         int width = outBitmap.getWidth();
         int height = outBitmap.getHeight();
-        if (cameraOrientation == 6 && width > height)
+        if (!sharedLandscape && width > height)
             outBitmap = rotateBitMap(outBitmap, 90);
-        if (cameraOrientation == 1 && width < height)
+        if (sharedLandscape && width < height)
             outBitmap = rotateBitMap(outBitmap, 90);
-        if (cameraOrientation == 3)
-            outBitmap = rotateBitMap(outBitmap, 180);
+//        if (!sharedLandscape && (sharedFace == CameraCharacteristics.LENS_FACING_FRONT))
+//            outBitmap = rotateBitMap(outBitmap, 180);
 
         if (withPhoto && suffix.length() == 0) {    // no suffix
             String outFileName = sdfFileName.format(currTime) + suffix;
@@ -217,6 +220,7 @@ class BuildBitMap {
     }
 
     private void writeCameraFile(Bitmap bitmap, File file) {
+
         FileOutputStream os;
         try {
             os = new FileOutputStream(file);
