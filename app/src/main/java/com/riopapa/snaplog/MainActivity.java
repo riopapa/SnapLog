@@ -145,22 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView mPlace = findViewById(R.id.btnPlace);
         mPlace.setOnClickListener(v -> {
-            pageToken = NO_MORE_PAGE;
-            placeInfos = new ArrayList<>();
-            mPlace.setVisibility(View.INVISIBLE);
-            String placeName = tvAddress.getText().toString();
-            if (placeName.startsWith("?")) {
-                String[] placeNames = placeName.split("\n");
-                byPlaceName = placeNames[0].substring(1);
-            } else
-                byPlaceName = "";
-            new PlaceRetrieve(mContext, oLatitude, oLongitude, placeType, pageToken, sharedRadius, byPlaceName);
-            new Timer().schedule(new TimerTask() {
-                public void run() {
-                    selectPlace();
-                    mActivity.runOnUiThread(() -> mPlace.setVisibility(View.VISIBLE));
-                }
-            }, 3000);
+            placeHandler.sendEmptyMessage(0);
         });
 
         mPlace.setImageBitmap(utils.maskedIcon(typeIcons[typeNumber]));
@@ -226,6 +211,26 @@ public class MainActivity extends AppCompatActivity {
         orientationHandler.sendEmptyMessage(0);
     }
 
+    static void getPlaceList() {
+        ImageView mPlace = mActivity.findViewById(R.id.btnPlace);
+        pageToken = NO_MORE_PAGE;
+        placeInfos = new ArrayList<>();
+        mPlace.setVisibility(View.INVISIBLE);
+        String placeName = tvAddress.getText().toString();
+        if (placeName.startsWith("?")) {
+            String[] placeNames = placeName.split("\n");
+            byPlaceName = placeNames[0].substring(1);
+        } else
+            byPlaceName = "";
+        new PlaceRetrieve(mContext, oLatitude, oLongitude, placeType, pageToken, sharedRadius, byPlaceName);
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                selectPlace();
+                mActivity.runOnUiThread(() -> mPlace.setVisibility(View.VISIBLE));
+            }
+        }, 3000);
+    }
+
     @Override
     protected void onResume() {
         startBackgroundThread();
@@ -284,9 +289,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void selectPlace() {
-        Intent intent = new Intent(MainActivity.this, SelectActivity.class);
-        startActivity(intent);
+    static void selectPlace() {
+        Intent intent = new Intent(mContext, SelectActivity.class);
+        mActivity.startActivity(intent);
     }
 
     private void show_logo() {
@@ -381,6 +386,12 @@ public class MainActivity extends AppCompatActivity {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
 //
 //            cameraSub.open(mWidth,mHeight);
+        }
+    };
+
+    public final static Handler placeHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            getPlaceList();
         }
     };
 

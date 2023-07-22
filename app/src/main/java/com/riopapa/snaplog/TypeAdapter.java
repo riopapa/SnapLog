@@ -1,5 +1,6 @@
 package com.riopapa.snaplog;
 
+import static com.riopapa.snaplog.MainActivity.placeHandler;
 import static com.riopapa.snaplog.Vars.mActivity;
 import static com.riopapa.snaplog.Vars.placeType;
 import static com.riopapa.snaplog.Vars.typeAdapter;
@@ -41,13 +42,13 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeHolder>  {
             this.tvName = itemView.findViewById(R.id.typeName);
             this.ivIcon = itemView.findViewById(R.id.typeIcon);
             this.viewLine.setOnClickListener(view1 -> {
-                int newNumber = getAbsoluteAdapterPosition();
+                typeAdapter.notifyItemChanged(typeNumber);
+                typeNumber = getAbsoluteAdapterPosition();
+                typeAdapter.notifyItemChanged(typeNumber);
                 placeType = typeNames[typeNumber];
-                typeAdapter.notifyItemChanged(typeNumber);
-                typeNumber = newNumber;
-                typeAdapter.notifyItemChanged(typeNumber);
                 ImageView iv = mActivity.findViewById(R.id.btnPlace);
                 iv.setImageBitmap(utils.maskedIcon(typeIcons[typeNumber]));
+                placeHandler.sendEmptyMessage(0);
             });
         }
     }
