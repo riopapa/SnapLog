@@ -158,10 +158,10 @@ class BuildBitMap {
     private void markDateTime(long timeStamp, int width, int height, Canvas canvas) {
         final SimpleDateFormat sdfDate = new SimpleDateFormat("`yy/MM/dd", Locale.KOREA);
         final SimpleDateFormat sdfHourMin = new SimpleDateFormat("HH:mm(EEE)", Locale.KOREA);
-        int fontSize = (width>height) ? (width+height)/70 : (width+height)/100;  // date time
+        int fontSize = (width>height) ? (width+height)/65 : (width+height)/80;  // date time
         String s = sdfDate.format(timeStamp);
-        int xPos = (width>height) ? width/10+fontSize: width/6+fontSize;
-        int yPos = (width>height) ? height/10: height/12;
+        int xPos = (width>height) ? width/9+fontSize: width/6+fontSize;
+        int yPos = (width>height) ? height/10: height/11;
         drawTextOnCanvas(canvas, s, fontSize, xPos, yPos);
         yPos += fontSize * 13 / 10;
         s = sdfHourMin.format(timeStamp);
@@ -170,8 +170,8 @@ class BuildBitMap {
 
     private  void markSignature(int width, int height, Canvas canvas) {
         int sigSizeX = sigMap.getWidth();
-        int xPos = width - sigSizeX - sigSizeX / 2;
-        int yPos = sigSizeX / 3;
+        int xPos = width - sigSizeX - ((width > height)? sigSizeX / 2 : 0);
+        int yPos = sigSizeX / 2;
         Paint paint = new Paint(); paint.setAlpha(Integer.parseInt(sharedAlpha));
         canvas.drawBitmap(sigMap, xPos, yPos, null);
     }

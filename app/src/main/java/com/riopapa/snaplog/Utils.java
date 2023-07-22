@@ -224,8 +224,8 @@ class Utils {
         Paint p = new Paint();
         p.setAlpha(Integer.parseInt(sharedAlpha));
         canvas.drawBitmap(sigMap, 0, 0, p);
-        width = 320;
-        height = 320 * sigMap.getHeight() / sigMap.getWidth();
+        width = 280;
+        height = 280 * sigMap.getHeight() / sigMap.getWidth();
         return Bitmap.createScaledBitmap(newMap, width, height, false);
     }
 }
