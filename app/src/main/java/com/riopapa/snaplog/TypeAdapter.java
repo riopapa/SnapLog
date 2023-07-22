@@ -41,9 +41,11 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeHolder>  {
             this.tvName = itemView.findViewById(R.id.typeName);
             this.ivIcon = itemView.findViewById(R.id.typeIcon);
             this.viewLine.setOnClickListener(view1 -> {
-                typeNumber = getAbsoluteAdapterPosition();
+                int newNumber = getAbsoluteAdapterPosition();
                 placeType = typeNames[typeNumber];
-                typeAdapter.notifyDataSetChanged();
+                typeAdapter.notifyItemChanged(typeNumber);
+                typeNumber = newNumber;
+                typeAdapter.notifyItemChanged(typeNumber);
                 ImageView iv = mActivity.findViewById(R.id.btnPlace);
                 iv.setImageBitmap(utils.maskedIcon(typeIcons[typeNumber]));
             });
