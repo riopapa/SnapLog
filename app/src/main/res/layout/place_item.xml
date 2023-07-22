@@ -14,7 +14,7 @@
         android:id="@+id/recycler_icon"
         android:layout_margin="2dp"
         android:layout_gravity="center"
-        android:src="@drawable/not_listed_location"
+        android:src="@mipmap/my_face"
         android:contentDescription="@string/app_name"
         />
     <LinearLayout

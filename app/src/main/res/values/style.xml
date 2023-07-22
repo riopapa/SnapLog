@@ -12,12 +12,4 @@
         <item name="android:layout_marginBottom">2sp</item>
     </style>
 
-    <style name="Switch" parent="Widget.AppCompat.CompoundButton.Switch">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:thumb">@drawable/switch_thumb</item>
-        <item name="android:track">@drawable/switch_selector</item>
-        <item name="switchMinWidth">48dp</item>
-    </style>
-
 </resources>

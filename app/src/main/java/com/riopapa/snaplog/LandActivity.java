@@ -73,16 +73,25 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
     private Bitmap mergeScaleBitmap(Bitmap mapImage, Bitmap scaleMap) {
 
-        Canvas canvas = new Canvas(mapImage);
+        Bitmap reSizedMap = mapImage;
+        float xSize = mapImage.getWidth();
+        float ySize = mapImage.getHeight();
+        if (xSize / ySize > 1.78) {
+            float xN = ySize * 1.78f;
+            reSizedMap = Bitmap.createBitmap(mapImage, ((int) (xSize-xN))/2, 0, (int) xN, (int) ySize);
+        } else if (ySize / xSize > 1.78) {
+            float yN = xSize * 1.78f;
+            reSizedMap = Bitmap.createBitmap(mapImage, 0, ((int) (ySize-yN))/2, (int) xSize, (int) yN);
+        }
+        Canvas canvas = new Canvas(reSizedMap);
         Paint paint = new Paint();
-        canvas.drawBitmap(mapImage, 0, 0, paint);
+        canvas.drawBitmap(reSizedMap, 0, 0, paint);
 //        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
-        int xPos = mapImage.getWidth() - mapImage.getWidth() / 15 - scaleMap.getWidth();
-        int yPos = mapImage.getHeight() - mapImage.getHeight() / 20 - scaleMap.getHeight();
+        int xPos = reSizedMap.getWidth() - mapImage.getWidth() / 15 - scaleMap.getWidth();
+        int yPos = reSizedMap.getHeight() - mapImage.getHeight() / 20 - scaleMap.getHeight();
         canvas.drawBitmap(scaleMap, xPos, yPos, paint);
-        return mapImage;
+        return reSizedMap;
     }
-
 
     private Bitmap getScaleMap(int zoom) {
         //      20,      19,     18,    17,     16,     15,     14,     13,     12,     11,     10,     9

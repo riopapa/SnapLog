@@ -69,8 +69,8 @@
 
     <ImageView
         android:id="@+id/rotate"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_margin="16dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
@@ -82,8 +82,8 @@
 
     <ImageView
         android:id="@+id/btnShotExit2"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/shot_exit"
@@ -96,8 +96,8 @@
 
     <ImageView
         android:id="@+id/btnFacing"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="#00000000"
         android:contentDescription="@string/todo"
         android:src="@drawable/front_back"
