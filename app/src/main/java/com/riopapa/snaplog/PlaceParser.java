@@ -18,7 +18,7 @@ public class PlaceParser {
         HashMap<String, String> placeList = new HashMap<>();
         String placeName = "--NA--";
         String vicinity= "--NA--";
-        String icon = "";
+        String icon;
 
         try {
             if (!placeJson.isNull("name")) {

@@ -4,11 +4,8 @@ import static com.riopapa.snaplog.Vars.mActivity;
 import static com.riopapa.snaplog.Vars.mPreviewSize;
 import static com.riopapa.snaplog.Vars.mTextureView;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.Surface;
 
 public class ConfigureTransform {

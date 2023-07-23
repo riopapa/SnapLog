@@ -17,14 +17,14 @@ public class DeviceOrientation {
                 SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int arg0) {
-                int newOrientation = -1;
+                int newOrientation;
                 if (arg0 > 300 || arg0 < 60)
                     newOrientation = 6;
                 else if (arg0 > 210 && arg0 < 300) {
                     newOrientation = 1;
                 } else
                     return;
-                if (newOrientation > 0 && newOrientation != orientation) {
+                if (newOrientation != orientation) {
                     orientation = newOrientation;
                     orientationHandler.sendEmptyMessage(orientation);
                 }

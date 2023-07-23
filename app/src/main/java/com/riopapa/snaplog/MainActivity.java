@@ -144,9 +144,7 @@ public class MainActivity extends AppCompatActivity {
         mSpeak.setOnClickListener(v -> startGetVoice());
 
         ImageView mPlace = findViewById(R.id.btnPlace);
-        mPlace.setOnClickListener(v -> {
-            placeHandler.sendEmptyMessage(0);
-        });
+        mPlace.setOnClickListener(v -> placeHandler.sendEmptyMessage(0));
 
         mPlace.setImageBitmap(utils.maskedIcon(typeIcons[typeNumber]));
 

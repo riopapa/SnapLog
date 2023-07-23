@@ -39,7 +39,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
             this.tvAddress = itemView.findViewById(R.id.recycler_PlaceAddress);
             this.ivIcon = itemView.findViewById(R.id.recycler_icon);
             this.viewLine.setOnClickListener(view1 -> {
-                int idx = getAdapterPosition();
+                int idx = getAbsoluteAdapterPosition();
                 strPlace = placeInfos.get(idx).oName;
                 strAddress = placeInfos.get(idx).oAddress;
                 sharedLocation = strPlace + "\n" + strAddress;

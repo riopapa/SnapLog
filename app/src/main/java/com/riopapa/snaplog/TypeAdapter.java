@@ -10,7 +10,6 @@ import static com.riopapa.snaplog.Vars.typeNumber;
 import static com.riopapa.snaplog.Vars.utils;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +23,7 @@ import java.util.ArrayList;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeHolder>  {
 
-    private  ArrayList<TypeInfo> mData = null;
-
     public TypeAdapter(ArrayList<TypeInfo> typeInfos) {
-        mData = typeInfos;
     }
 
     static class TypeHolder extends RecyclerView.ViewHolder {

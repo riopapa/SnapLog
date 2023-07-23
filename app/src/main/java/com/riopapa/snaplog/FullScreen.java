@@ -15,9 +15,5 @@ public class FullScreen {
             controller.setSystemBarsBehavior(
                     WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
-//        }
-//        controller.hide(WindowInsets.Type.statusBars() |
-//                WindowInsets.Type.navigationBars());
     }
-
 }

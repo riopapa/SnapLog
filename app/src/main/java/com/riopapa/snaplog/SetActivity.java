@@ -2,7 +2,6 @@ package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
-import static com.riopapa.snaplog.Vars.sharedAutoLoad;
 import static com.riopapa.snaplog.Vars.sharedPref;
 import static com.riopapa.snaplog.Vars.sharedRadius;
 import static com.riopapa.snaplog.Vars.sharedSortType;
@@ -19,8 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import androidx.appcompat.widget.SwitchCompat;
-
 public class SetActivity extends Activity {
 
     String[] radiusArray, sortArray, zoomArray;
@@ -34,13 +31,6 @@ public class SetActivity extends Activity {
 
         sharedPref = mContext.getSharedPreferences("snap", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-//
-//        SwitchCompat switchCompat = findViewById(R.id.autoLoad);
-//        switchCompat.setChecked(sharedAutoLoad);
-//        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            sharedAutoLoad = !sharedAutoLoad;
-//            switchCompat.setChecked(sharedAutoLoad);
-//        });
 
         sortArray = getResources().getStringArray(R.array.sort_values);
         for (int i = 0; i < sortArray.length; i++) {

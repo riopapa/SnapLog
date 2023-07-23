@@ -1,8 +1,6 @@
 package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.MainActivity.abortHandler;
-import static com.riopapa.snaplog.MainActivity.galleryHandler;
-import static com.riopapa.snaplog.MainActivity.stopBackgroundThread;
 import static com.riopapa.snaplog.Vars.imageDimensions;
 import static com.riopapa.snaplog.Vars.mActivity;
 import static com.riopapa.snaplog.Vars.mBackgroundHandler;
@@ -20,7 +18,7 @@ import static com.riopapa.snaplog.Vars.sharedFace;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
-import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -35,6 +33,8 @@ import android.media.ImageReader;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -138,9 +138,7 @@ public class CameraSub {
 
                 // We don't use a front facing camera in this sample.
                 Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-//                if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
-//                    continue;
-//                }
+
                 if (facing != null && facing == sharedFace) {
                     continue;
                 }
@@ -160,12 +158,11 @@ public class CameraSub {
                 mImageReader.setOnImageAvailableListener(
                         null, mBackgroundHandler);
 
-                Point displaySize = new Point();
-                mActivity.getWindowManager().getDefaultDisplay().getSize(displaySize);
-                int rotatedPreviewWidth = width;
-                int rotatedPreviewHeight = height;
-                int maxPreviewWidth = displaySize.x;
-                int maxPreviewHeight = displaySize.y;
+                WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+                WindowMetrics metrics = windowManager.getMaximumWindowMetrics();
+                Rect bounds = metrics.getBounds();
+                int maxPreviewWidth = bounds.width();
+                int maxPreviewHeight = bounds.height();
 
                 if (maxPreviewWidth > 1920) {
                     maxPreviewWidth = 1920;
@@ -175,11 +172,8 @@ public class CameraSub {
                     maxPreviewHeight = 1080;
                 }
 
-                // Danger! Attempting to use too large a preview size could  exceed the camera
-                // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
-                // garbage capture data.
                 mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                        rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
+                        width, height, maxPreviewWidth,
                         maxPreviewHeight, largest);
 
                 mCameraId = cameraId;

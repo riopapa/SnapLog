@@ -24,7 +24,6 @@ public class Vars {
     static String strPlace = null;
     static String strAddress = null;
     static String strVoice = " ";
-    static String strDateTime = "\n";
 
     /* -- shared Preferences --- */
     static SharedPreferences sharedPref;
@@ -45,7 +44,6 @@ public class Vars {
     static boolean exitFlag = false;
     static ImageReader mImageReader;
     static CaptureRequest.Builder mPreviewRequestBuilder;
-    static CaptureRequest mPreviewRequest;
     static Semaphore mCameraOpenCloseLock = new Semaphore(1);
     static final int REQUEST_CAMERA_PERMISSION = 1;
     static CameraCaptureSession mCaptureSession;
@@ -55,7 +53,6 @@ public class Vars {
     static Size imageDimensions;
 
     static String map_api_key;
-    static Bitmap cameraImage;
 
     static TextureView mTextureView;
     static Size mPreviewSize;
@@ -82,7 +79,6 @@ public class Vars {
     static boolean isPlaceNull = true;
     static ArrayList<PlaceInfo> placeInfos = null;
     static Activity selectActivity;
-    static DeviceOrientation deviceOrientation;
 
     static File directory;
     final static int SAVE_MAP = 34567;

@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,9 +54,9 @@ public class SelectActivity extends AppCompatActivity {
                     } else {
                         waitTimer.cancel();
                         if (sharedSortType.equals("name") && placeInfos.size() > 0)
-                            placeInfos.sort((arg0, arg1) -> arg0.oName.compareTo(arg1.oName));
+                            placeInfos.sort(Comparator.comparing(arg0 -> arg0.oName));
                         else if (sharedSortType.equals("distance") && placeInfos.size() > 0)
-                            placeInfos.sort((arg0, arg1) -> arg0.distance.compareTo(arg1.distance));
+                            placeInfos.sort(Comparator.comparing(arg0 -> arg0.distance));
                         String s = "Total "+placeInfos.size()+" places retrieved";
                         utils.log("LIST", s);
                         Toast.makeText(mContext,s, Toast.LENGTH_SHORT).show();

@@ -7,12 +7,6 @@ import android.widget.Toast;
 
 public class Message {
     void show(final String text) {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
-            }
-        });
+        mActivity.runOnUiThread(() -> Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show());
     }
-
 }

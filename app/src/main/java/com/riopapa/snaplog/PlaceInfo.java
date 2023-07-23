@@ -25,12 +25,8 @@ class PlaceInfo {
             distance = ((Math.sqrt((oLatitude-lat)*(oLatitude-lat)+(oLongitude-lng)*(oLongitude-lng))*1000L+1000L)+"");
         }
     }
-
     public void setoName(String oName) {
         this.oName = oName;
     }
 
-    public void setDistance(String distance) {
-        this.distance = distance;
-    }
 }

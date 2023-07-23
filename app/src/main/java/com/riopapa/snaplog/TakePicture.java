@@ -39,6 +39,9 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Size;
 import android.view.Surface;
 
@@ -55,6 +58,19 @@ public class TakePicture {
         if(mCameraDevice==null)
             return;
         tContext = context;
+        if (!Environment.isExternalStorageManager()) {
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.addCategory("android.intent.category.DEFAULT");
+                intent.setData(Uri.parse(String.format("package:%s", tContext.getPackageName())));
+                tContext.startActivity(intent);
+            } catch (Exception e) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                tContext.startActivity(intent);
+//                tContext.startActivityForResult(intent, 1225);
+            }
+        }
 
         CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
 

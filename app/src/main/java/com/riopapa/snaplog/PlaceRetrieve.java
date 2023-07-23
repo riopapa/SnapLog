@@ -1,7 +1,6 @@
 package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.Vars.NO_MORE_PAGE;
-import static com.riopapa.snaplog.Vars.placeInfos;
 
 import android.content.Context;
 
