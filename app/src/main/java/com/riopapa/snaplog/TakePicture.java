@@ -97,15 +97,15 @@ public class TakePicture {
             Bitmap bitmap = BitmapFactory.decodeByteArray( bytes, 0, bytes.length ) ;
             image.close();
             now_time = System.currentTimeMillis();
-
-//            if (sharedFace == CameraCharacteristics.LENS_FACING_BACK && !sharedLandscape) {
-//                Matrix rotateMatrix = new Matrix();
-//                rotateMatrix.postRotate(180);
-//                bitmap = Bitmap.createBitmap(bitmap, 0, 0,
-//                        bitmap.getWidth(), bitmap.getHeight(), rotateMatrix, false);
-//            }
+            if (sharedFace == CameraCharacteristics.LENS_FACING_BACK && !sharedLandscape) {
+                Matrix rotateMatrix = new Matrix();
+                rotateMatrix.postRotate(180);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                        bitmap.getWidth(), bitmap.getHeight(), rotateMatrix, false);
+            }
 
             BuildBitMap buildBitMap = new BuildBitMap(bitmap, oLatitude, oLongitude, oAltitude, mActivity, mContext);
+
             buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time,"");
             strVoice = "";
             if (sharedMap) {
