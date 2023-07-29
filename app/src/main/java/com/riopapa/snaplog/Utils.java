@@ -112,7 +112,7 @@ class Utils {
     }
 
     File getPackageDirectory() {
-        directory = new File(Environment.getExternalStorageDirectory(), context.getResources().getString(R.string.app_name));
+        directory = new File(Environment.getExternalStorageDirectory(), "DCIM/"+context.getResources().getString(R.string.app_name));
         try {
             if (!directory.exists()) {
                 if(!directory.mkdirs()) {

@@ -1,22 +1,20 @@
 package com.riopapa.snaplog;
 
 import static com.riopapa.snaplog.Vars.directory;
-import static com.riopapa.snaplog.Vars.mContext;
+import static com.riopapa.snaplog.Vars.photo_time;
 import static com.riopapa.snaplog.Vars.sharedAlpha;
-import static com.riopapa.snaplog.Vars.sharedFace;
 import static com.riopapa.snaplog.Vars.sharedLandscape;
 import static com.riopapa.snaplog.Vars.sigMap;
+import static com.riopapa.snaplog.Vars.snap_time;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.hardware.camera2.CameraCharacteristics;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -33,7 +31,6 @@ import java.util.Locale;
 
 class BuildBitMap {
 
-    private long nowTime;
     private static final SimpleDateFormat sdfExif = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.KOREA);
     private final SimpleDateFormat sdfFileName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA);
     String phonePrefix = "";
@@ -49,32 +46,28 @@ class BuildBitMap {
         this.activity = activity;this.context = context;
     }
 
-    void makeOutMap(String sFood, String sName, String sAddress, boolean withPhoto, long currTime, String suffix) {
+    void makeOutMap(String sFood, String sName, String sAddress, boolean withPhoto, String suffix) {
         this.sFood = sFood; this.sPlace = sName; this.sAddress = sAddress;
-        this.nowTime = currTime;
         int width = outBitmap.getWidth();
         int height = outBitmap.getHeight();
         if (!sharedLandscape && width > height)
             outBitmap = rotateBitMap(outBitmap, 90);
         if (sharedLandscape && width < height)
             outBitmap = rotateBitMap(outBitmap, 90);
-//        if (!sharedLandscape && (sharedFace == CameraCharacteristics.LENS_FACING_FRONT))
-//            outBitmap = rotateBitMap(outBitmap, 180);
 
         if (withPhoto && suffix.length() == 0) {    // no suffix
-            String outFileName = sdfFileName.format(currTime) + suffix;
+            String outFileName = sdfFileName.format(photo_time) + suffix;
             File newFile = new File(directory, phonePrefix + outFileName + ".jpg");
             writeCameraFile(outBitmap, newFile);
             setNewFileExif(newFile);
 //            activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
         }
 
-        Bitmap mergedMap = markDateLocSignature(outBitmap, currTime, suffix);
-        currTime += 150;
+        Bitmap mergedMap = markDateLocSignature(outBitmap, photo_time, suffix);
         String foodName = sFood.trim();
         if (foodName.length() > 2)
             foodName = "(" + foodName +")";
-        String outFileName2 = sdfFileName.format(currTime) + "_" + sPlace + foodName;
+        String outFileName2 = sdfFileName.format(snap_time) + "_" + sPlace + foodName;
         File newFile2 = new File(directory, phonePrefix + outFileName2 + suffix + "_ha.jpg");
         writeCameraFile(mergedMap, newFile2);
         setNewFileExif(newFile2);
@@ -95,7 +88,7 @@ class BuildBitMap {
             exifHa.setAttribute(ExifInterface.TAG_GPS_ALTITUDE, convertALT2DMS(altitude));
             exifHa.setAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF, (altitude> 0)? "0":"1");
             exifHa.setAttribute(ExifInterface.TAG_ORIENTATION, "1");
-            exifHa.setAttribute(ExifInterface.TAG_DATETIME, sdfExif.format(nowTime));
+            exifHa.setAttribute(ExifInterface.TAG_DATETIME, sdfExif.format(photo_time));
             exifHa.setAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION, "Save Photo by riopapa");
             exifHa.saveAttributes();
         } catch (IOException e) {

@@ -58,7 +58,7 @@ public class SelectActivity extends AppCompatActivity {
                         else if (sharedSortType.equals("distance") && placeInfos.size() > 0)
                             placeInfos.sort(Comparator.comparing(arg0 -> arg0.distance));
                         String s = "Total "+placeInfos.size()+" places retrieved";
-                        utils.log("LIST", s);
+//                        utils.log("LIST", s);
                         Toast.makeText(mContext,s, Toast.LENGTH_SHORT).show();
                         PlaceAdapter placeAdapter = new PlaceAdapter();
                         placeRecycleView.setAdapter(placeAdapter);

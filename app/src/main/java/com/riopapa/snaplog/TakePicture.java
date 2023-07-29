@@ -13,11 +13,12 @@ import static com.riopapa.snaplog.Vars.mBackgroundHandler;
 import static com.riopapa.snaplog.Vars.mCameraDevice;
 import static com.riopapa.snaplog.Vars.mContext;
 import static com.riopapa.snaplog.Vars.mTextureView;
-import static com.riopapa.snaplog.Vars.now_time;
+import static com.riopapa.snaplog.Vars.photo_time;
 import static com.riopapa.snaplog.Vars.sharedFace;
 import static com.riopapa.snaplog.Vars.sharedLandscape;
 import static com.riopapa.snaplog.Vars.sharedMap;
 import static com.riopapa.snaplog.Vars.sharedWithPhoto;
+import static com.riopapa.snaplog.Vars.snap_time;
 import static com.riopapa.snaplog.Vars.strAddress;
 import static com.riopapa.snaplog.Vars.strPlace;
 import static com.riopapa.snaplog.Vars.strVoice;
@@ -112,7 +113,8 @@ public class TakePicture {
             buffer.get(bytes);
             Bitmap bitmap = BitmapFactory.decodeByteArray( bytes, 0, bytes.length ) ;
             image.close();
-            now_time = System.currentTimeMillis();
+            photo_time = System.currentTimeMillis() - 2000;
+            snap_time = photo_time + 4000;
             if (sharedFace == CameraCharacteristics.LENS_FACING_BACK && !sharedLandscape) {
                 Matrix rotateMatrix = new Matrix();
                 rotateMatrix.postRotate(180);
@@ -122,7 +124,7 @@ public class TakePicture {
 
             BuildBitMap buildBitMap = new BuildBitMap(bitmap, oLatitude, oLongitude, oAltitude, mActivity, mContext);
 
-            buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time,"");
+            buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, "");
             strVoice = "";
             if (sharedMap) {
                 googleShot = null;

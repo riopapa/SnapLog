@@ -40,7 +40,7 @@ public class Vars {
     static int sharedFace;
     static Bitmap sigMap = null;
     static Bitmap googleShot = null;
-    static long now_time;
+    static long photo_time, snap_time;
     static boolean exitFlag = false;
     static ImageReader mImageReader;
     static CaptureRequest.Builder mPreviewRequestBuilder;

@@ -19,7 +19,6 @@ import static com.riopapa.snaplog.Vars.mHeight;
 import static com.riopapa.snaplog.Vars.mTextureView;
 import static com.riopapa.snaplog.Vars.mWidth;
 import static com.riopapa.snaplog.Vars.map_api_key;
-import static com.riopapa.snaplog.Vars.now_time;
 import static com.riopapa.snaplog.Vars.pageToken;
 import static com.riopapa.snaplog.Vars.placeInfos;
 import static com.riopapa.snaplog.Vars.placeType;
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         currActivity = this.getClass().getSimpleName();
         mActivity = this;
@@ -410,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
                     btnShot2.setVisibility(View.VISIBLE);
                 });
             }
-        }, 5000);   // wait while photo generated
+        }, 3000);   // wait while photo generated
         sharedLocation = tvAddress.getText().toString();
 
         String [] s = sharedLocation.split("\n");
@@ -451,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private static void save_GoogleMap(Bitmap googleShot) {
         BuildBitMap buildBitMap = new BuildBitMap(googleShot, oLatitude, oLongitude, oAltitude, mActivity, mContext);
-        buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, now_time, "Map");
+        buildBitMap.makeOutMap(strVoice, strPlace, strAddress, sharedWithPhoto, "Map");
     }
 
     public final static Handler galleryHandler = new Handler(Looper.getMainLooper()) {
